@@ -1,24 +1,14 @@
+import { mockAxiosResponse, mockPostRequest } from '@/infra/test'
 import { HttpPostClient } from '@/data/contracts'
 import { AxiosHttpClient } from './axios-client'
 
 import axios, { AxiosStatic } from 'axios'
-import faker from 'faker'
 
 jest.mock('axios')
 
 const makeSut = (): AxiosHttpClient => {
   return new AxiosHttpClient()
 }
-
-const mockPostRequest = (): HttpPostClient.Request<any> => ({
-  url: faker.internet.url(),
-  body: faker.random.objectElement()
-})
-
-const mockAxiosResponse = (): any => ({
-  status: faker.datatype.number(),
-  data: faker.random.objectElement()
-})
 
 describe('AxiosHttpClient', () => {
   let mockedAxios: jest.Mocked<AxiosStatic>
