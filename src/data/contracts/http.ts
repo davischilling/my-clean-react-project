@@ -9,7 +9,7 @@ export namespace HttpPostClient {
   }
   export type Response<R> = {
     statusCode: HttpStatusCode
-    body?: R
+    data?: R
   }
 }
 
