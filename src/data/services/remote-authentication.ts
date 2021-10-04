@@ -1,11 +1,12 @@
-import { InvalidCredentialsError, UnexpectedError, NotFoundError, ServerError } from '@/data/error'
+import { AccountModel } from '@/domain/models/account-model'
 import { Authentication } from '@/domain/usecases'
 import { HttpPostClient, HttpStatusCode } from '@/data/contracts'
+import { InvalidCredentialsError, UnexpectedError, NotFoundError, ServerError } from '@/data/error'
 
 export class RemoteAuthentication {
   constructor (
     private readonly url: string,
-    private readonly httpPostClient: HttpPostClient
+    private readonly httpPostClient: HttpPostClient<Authentication.Params, AccountModel>
   ) {}
 
   async auth (params: Authentication.Params): Promise<void> {
