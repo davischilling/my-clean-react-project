@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test": "jest --passWithNoTests --no-cache --runInBand",
     "prepare": "husky install"
   },
   "keywords": [],
