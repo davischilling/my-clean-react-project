@@ -5,6 +5,10 @@ import axios from 'axios'
 
 jest.mock('axios')
 
+const makeSut = (): AxiosHttpClient => {
+  return new AxiosHttpClient()
+}
+
 describe('AxiosHttpClient', () => {
   let mockedAxios: typeof axios
   let url: string
@@ -15,7 +19,7 @@ describe('AxiosHttpClient', () => {
   })
 
   test('should call axios with correct URL', async () => {
-    const sut = new AxiosHttpClient()
+    const sut = makeSut()
 
     await sut.post({ url })
 
