@@ -4,6 +4,6 @@ import axios from 'axios'
 
 export class AxiosHttpClient {
   async post (params: HttpPostClient.Request<any>): Promise<void> {
-    await axios(params.url)
+    await axios.post(params.url)
   }
 }
