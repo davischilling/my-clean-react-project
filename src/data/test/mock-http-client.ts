@@ -1,4 +1,4 @@
-import { HttpPostClient } from '../contracts'
+import { HttpPostClient } from '@/data/contracts'
 
 export class HttpPostClientSpy implements HttpPostClient {
   url?: string

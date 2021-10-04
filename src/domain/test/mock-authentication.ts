@@ -1,4 +1,4 @@
-import { Authentication } from '../usecases'
+import { Authentication } from '@/domain/usecases'
 import { mockAccountModel } from './mock-account'
 
 import faker from 'faker'

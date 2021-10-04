@@ -12,6 +12,10 @@
     "jsx": "react",
     "rootDir": "src",
     "baseUrl": "src",
+    "paths": {
+      "@/*": ["*"],
+      "@/tests/*": ["../tests/*"]
+    },
     "allowJs": true,
     "skipLibCheck": true,
     "resolveJsonModule": true
