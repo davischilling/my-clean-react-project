@@ -8,30 +8,21 @@
   box-sizing: border-box;
 }
 
-body {
-  background-color: $background;
-}
-
 input[type="password"],
-input[type="email"],
-input[type="text"] {
-  border: none;
-  outline: none;
-
-  &:focus {
-    outline-color: $primaryLight;
-  }
+input[type="email"] {
+  border: 1px solid $primaryLight;
+  line-height: 40px;
+  border-radius: 4px;
+  padding: 0px 40px 0px 8px;
 }
 
 button {
   background-color: $primary;
-  line-height: 50px;
+  line-height: 60px;
   color: $white;
   border-radius: 8px;
   font-size: 16px;
   border: none;
-  padding: 0px 16px;
-  outline: none;
 
   &:hover {
     opacity: 0.9;
