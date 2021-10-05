@@ -4,25 +4,25 @@ import { FormContext } from '@/presentation/contexts'
 
 import React, { useState } from 'react'
 
-type StateProps = {
-  isLoading: boolean
-  errorMessage: string
-}
-
 const Login: React.FC = () => {
-  const [state] = useState<StateProps>({
-    isLoading: false,
-    errorMessage: ''
+  const [state] = useState({
+    isLoading: false
+  })
+
+  const [errorState] = useState({
+    email: 'Campo obrigatório',
+    password: 'Campo obrigatório',
+    mainErrorMessage: ''
   })
 
   return (
     <div className={Styles.loginWrap}>
       <LoginHeader />
-      <FormContext.Provider value={state}>
+      <FormContext.Provider value={{ state, errorState }}>
         <form action="" className={Styles.form}>
           <h2>Login</h2>
           <Input type="email" name="email" placeholder="Digite seu e-mail" />
-          <Input type="password" name="email" placeholder="Digite sua senha" />
+          <Input type="password" name="password" placeholder="Digite sua senha" />
           <button data-testid="submit" disabled className={Styles.submit} type="submit">Entrar</button>
           <span className={Styles.link}>Criar conta</span>
           <FormStatus />
