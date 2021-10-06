@@ -1,8 +1,9 @@
+import { InvalidCredentialsError } from '@/data/error'
 import { ValidationStub } from '@/data/test'
 import { AuthenticationStub } from '@/domain/test'
 import { mockValidationResponse } from '@/infra/test'
 
-import { cleanup, fireEvent, render, RenderResult } from '@testing-library/react'
+import { waitFor, cleanup, fireEvent, render, RenderResult } from '@testing-library/react'
 import faker from 'faker'
 import React from 'react'
 import Login from './login'
@@ -170,5 +171,21 @@ describe('Login Component', () => {
     fireEvent.submit(getByTestId('form'))
 
     expect(authenticationSpy).toHaveBeenCalledTimes(0)
+  })
+
+  test('should present error if Authentication fails', async () => {
+    const { getByTestId } = sut
+    const error = new InvalidCredentialsError()
+
+    authenticationSpy.mockResolvedValueOnce(Promise.reject(error))
+
+    simulateValidSubmit(sut)
+    const errorWrap = getByTestId('error-wrap')
+    await waitFor(() => errorWrap)
+
+    const mainErrorMessage = getByTestId('main-error')
+
+    expect(mainErrorMessage.textContent).toBe(error.message)
+    expect(errorWrap.childElementCount).toBe(1)
   })
 })
