@@ -1,13 +1,35 @@
 import Styles from './input-styles.scss'
 import { FormContext } from '@/presentation/contexts'
 
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 
 type Props = React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
 
 const Input: React.FC<Props> = (props: Props) => {
-  const { state, setState } = useContext(FormContext)
+  const { state, setState, validation } = useContext(FormContext)
   const error = state[`${props.name}Error`]
+
+  useEffect(() => {
+    if (state[`${props.name}`] !== '') {
+      const { error } = validation.validate({ [`${props.name}`]: state[`${props.name}`] })
+      if (error !== undefined) {
+        setState({
+          ...state,
+          [`${props.name}Error`]: error
+        })
+      } else {
+        setState({
+          ...state,
+          [`${props.name}Error`]: ''
+        })
+      }
+    } else if (state[`${props.name}Error`] !== 'Campo obrigatório') {
+      setState({
+        ...state,
+        [`${props.name}Error`]: 'Campo obrigatório'
+      })
+    }
+  }, [state[`${props.name}`]])
 
   const handleChange = (event: React.FocusEvent<HTMLInputElement>): void => {
     setState({
@@ -21,11 +43,15 @@ const Input: React.FC<Props> = (props: Props) => {
   }
 
   const getStatus = (): string => {
-    return '🔴'
+    return error ? '🔴' : '🟢'
   }
 
   const getTitle = (): string => {
-    return error
+    if (props.name !== '' && error === '') {
+      return 'Tudo certo!'
+    } else {
+      return error
+    }
   }
 
   return (
