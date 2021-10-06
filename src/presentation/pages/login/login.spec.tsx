@@ -23,9 +23,9 @@ describe('Login Component', () => {
     const { getByTestId } = sut
 
     const errorWrap = getByTestId('error-wrap')
-    const submitButton = getByTestId('submit') as HTMLButtonElement
     const emailStatus = getByTestId('email-status')
     const passwordStatus = getByTestId('password-status')
+    const submitButton = getByTestId('submit') as HTMLButtonElement
 
     expect(errorWrap.childElementCount).toBe(0)
     expect(submitButton.disabled).toBe(true)
@@ -104,5 +104,17 @@ describe('Login Component', () => {
     expect(emailStatus.textContent).toBe('🟢')
     expect(passwordStatus.title).toBe('Tudo certo!')
     expect(passwordStatus.textContent).toBe('🟢')
+  })
+
+  test('should disable submit button only if form is invalid', () => {
+    const { getByTestId } = sut
+
+    const emailInput = getByTestId('email')
+    fireEvent.input(emailInput, { target: { value: faker.internet.email() } })
+    const passwordInput = getByTestId('password')
+    fireEvent.input(passwordInput, { target: { value: faker.internet.password() } })
+    const submitButton = getByTestId('submit') as HTMLButtonElement
+
+    expect(submitButton.disabled).toBe(false)
   })
 })
