@@ -156,4 +156,19 @@ describe('Login Component', () => {
 
     expect(authenticationSpy).toHaveBeenCalledTimes(1)
   })
+
+  test('should not call Authentication if form is invalid', () => {
+    const { getByTestId } = sut
+
+    const validateResponse = {
+      value: 'password',
+      error: faker.random.words()
+    }
+    validateSpy.mockReturnValueOnce(validateResponse)
+
+    populateEmailField(sut)
+    fireEvent.submit(getByTestId('form'))
+
+    expect(authenticationSpy).toHaveBeenCalledTimes(0)
+  })
 })
