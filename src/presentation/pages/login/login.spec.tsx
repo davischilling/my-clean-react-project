@@ -8,6 +8,8 @@ import 'jest-localstorage-mock'
 import { waitFor, cleanup, fireEvent, render, RenderResult } from '@testing-library/react'
 import faker from 'faker'
 import React from 'react'
+import { Router } from 'react-router-dom'
+import { createMemoryHistory } from 'history'
 
 const populateEmailField = (sut: RenderResult, email: string = faker.internet.email()): void => {
   const { getByTestId } = sut
@@ -29,6 +31,8 @@ const simulateValidSubmit = (sut: RenderResult, email?: string, password?: strin
   fireEvent.click(submitButton)
 }
 
+const history = createMemoryHistory()
+
 describe('Login Component', () => {
   let sut: RenderResult
   let validateSpy: jest.SpyInstance
@@ -42,7 +46,12 @@ describe('Login Component', () => {
     validateSpy.mockReturnValue(mockValidationResponse())
     authentication = new AuthenticationStub()
     authenticationSpy = jest.spyOn(authentication, 'auth')
-    sut = render(<Login validation={validation} authentication={authentication} />)
+
+    sut = render(
+      <Router history={history} >
+        <Login validation={validation} authentication={authentication} />
+      </Router>
+    )
   })
 
   afterEach(cleanup)
@@ -200,5 +209,15 @@ describe('Login Component', () => {
     await waitFor(() => getByTestId('form'))
 
     expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', authentication.account.accessToken)
+  })
+
+  test('should go to signup page', () => {
+    const { getByTestId } = sut
+
+    const signUpPage = getByTestId('signup-page')
+    fireEvent.click(signUpPage)
+
+    expect(history.length).toBe(2)
+    expect(history.location.pathname).toBe('/signup')
   })
 })
