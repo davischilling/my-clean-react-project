@@ -1,12 +1,13 @@
+import Login from './login'
 import { InvalidCredentialsError } from '@/data/error'
 import { ValidationStub } from '@/data/test'
 import { AuthenticationStub } from '@/domain/test'
 import { mockValidationResponse } from '@/infra/test'
 
+import 'jest-localstorage-mock'
 import { waitFor, cleanup, fireEvent, render, RenderResult } from '@testing-library/react'
 import faker from 'faker'
 import React from 'react'
-import Login from './login'
 
 const populateEmailField = (sut: RenderResult, email: string = faker.internet.email()): void => {
   const { getByTestId } = sut
@@ -32,12 +33,14 @@ describe('Login Component', () => {
   let sut: RenderResult
   let validateSpy: jest.SpyInstance
   let authenticationSpy: jest.SpyInstance
+  let authentication: AuthenticationStub
 
   beforeEach(() => {
+    localStorage.clear()
     const validation = new ValidationStub()
     validateSpy = jest.spyOn(validation, 'validate')
     validateSpy.mockReturnValue(mockValidationResponse())
-    const authentication = new AuthenticationStub()
+    authentication = new AuthenticationStub()
     authenticationSpy = jest.spyOn(authentication, 'auth')
     sut = render(<Login validation={validation} authentication={authentication} />)
   })
@@ -187,5 +190,15 @@ describe('Login Component', () => {
 
     expect(mainErrorMessage.textContent).toBe(error.message)
     expect(errorWrap.childElementCount).toBe(1)
+  })
+
+  test('should add accessToken to localstorage on success', async () => {
+    const { getByTestId } = sut
+
+    simulateValidSubmit(sut)
+
+    await waitFor(() => getByTestId('form'))
+
+    expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', authentication.account.accessToken)
   })
 })
