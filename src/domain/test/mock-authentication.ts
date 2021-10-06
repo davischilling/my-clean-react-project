@@ -1,3 +1,4 @@
+import { AccountModel } from '@/domain/models'
 import { Authentication } from '@/domain/usecases'
 import { mockAccountModel } from './mock-account'
 
@@ -8,16 +9,9 @@ export const mockAuthenticationParams = (): Authentication.Params => ({
   password: faker.internet.password()
 })
 
-export const mockAuthenticationModel = (): Authentication.Model => mockAccountModel()
-
-export class AuthenticationSpy implements Authentication {
-  account = mockAuthenticationModel()
-  params: Authentication.Params
-  callsCount = 0
-
-  async auth (params: Authentication.Params): Promise<Authentication.Model> {
-    this.params = params
-    this.callsCount++
-    return this.account
+export class AuthenticationStub implements Authentication {
+  account = mockAccountModel()
+  async auth (params: Authentication.Params): Promise<AccountModel> {
+    return await Promise.resolve(this.account)
   }
 }

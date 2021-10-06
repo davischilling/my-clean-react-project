@@ -1,20 +1,24 @@
-import React from 'react'
-import { cleanup, render, RenderResult, fireEvent } from '@testing-library/react'
-import Login from './login'
 import { ValidationStub } from '@/data/test'
-
-import faker from 'faker'
+import { AuthenticationStub } from '@/domain/test'
 import { mockValidationResponse } from '@/infra/test'
+
+import { cleanup, fireEvent, render, RenderResult } from '@testing-library/react'
+import faker from 'faker'
+import React from 'react'
+import Login from './login'
 
 describe('Login Component', () => {
   let sut: RenderResult
   let validateSpy: jest.SpyInstance
+  let authenticationSpy: jest.SpyInstance
 
   beforeEach(() => {
     const validation = new ValidationStub()
     validateSpy = jest.spyOn(validation, 'validate')
     validateSpy.mockReturnValue(mockValidationResponse())
-    sut = render(<Login validation={validation} />)
+    const authentication = new AuthenticationStub()
+    authenticationSpy = jest.spyOn(authentication, 'auth')
+    sut = render(<Login validation={validation} authentication={authentication} />)
   })
 
   afterEach(cleanup)
@@ -130,5 +134,23 @@ describe('Login Component', () => {
     const spinner = getByTestId('spinner')
 
     expect(spinner).toBeTruthy()
+  })
+
+  test('should call Authentication with correct values on submit', () => {
+    const { getByTestId } = sut
+    const email = faker.internet.email()
+    const password = faker.internet.password()
+
+    const emailInput = getByTestId('email')
+    fireEvent.input(emailInput, { target: { value: email } })
+    const passwordInput = getByTestId('password')
+    fireEvent.input(passwordInput, { target: { value: password } })
+    const submitButton = getByTestId('submit')
+    fireEvent.click(submitButton)
+
+    expect(authenticationSpy).toHaveBeenCalledWith({
+      email,
+      password
+    })
   })
 })
