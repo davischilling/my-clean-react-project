@@ -3,8 +3,8 @@ export type Schema = {
 }
 
 export type ValidationResponse = {
-  error?: Error
-  warning?: Error
+  error?: string
+  warning?: string
   value: any
 }
 

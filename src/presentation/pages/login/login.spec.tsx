@@ -4,6 +4,7 @@ import Login from './login'
 import { ValidationStub } from '@/data/test'
 
 import faker from 'faker'
+import { mockValidationResponse } from '@/infra/test'
 
 describe('Login Component', () => {
   let sut: RenderResult
@@ -12,6 +13,7 @@ describe('Login Component', () => {
   beforeEach(() => {
     const validation = new ValidationStub()
     validateSpy = jest.spyOn(validation, 'validate')
+    validateSpy.mockReturnValue(mockValidationResponse())
     sut = render(<Login validation={validation} />)
   })
 
@@ -53,5 +55,37 @@ describe('Login Component', () => {
     fireEvent.input(passwordInput, { target: { value: password } })
 
     expect(validateSpy).toHaveBeenCalledWith({ password })
+  })
+
+  test('should show email error if Validation fails', () => {
+    const validateResponse = {
+      value: 'email',
+      error: faker.random.words()
+    }
+    validateSpy.mockReturnValueOnce(validateResponse)
+
+    const { getByTestId } = sut
+    const emailInput = getByTestId('email')
+    fireEvent.input(emailInput, { target: { value: faker.internet.email() } })
+    const emailStatus = getByTestId('email-status')
+
+    expect(emailStatus.title).toBe(validateResponse.error)
+    expect(emailStatus.textContent).toBe('🔴')
+  })
+
+  test('should show password error if Validation fails', () => {
+    const validateResponse = {
+      value: 'password',
+      error: faker.random.words()
+    }
+    validateSpy.mockReturnValueOnce(validateResponse)
+
+    const { getByTestId } = sut
+    const passwordInput = getByTestId('password')
+    fireEvent.input(passwordInput, { target: { value: faker.internet.password() } })
+    const passwordStatus = getByTestId('password-status')
+
+    expect(passwordStatus.title).toBe(validateResponse.error)
+    expect(passwordStatus.textContent).toBe('🔴')
   })
 })

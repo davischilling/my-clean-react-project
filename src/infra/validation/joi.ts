@@ -1,6 +1,6 @@
 import { Validation, ValidationResponse } from '@/data/contracts/validation'
 
-import { Schema } from 'joi'
+import { Schema, ValidationResult } from 'joi'
 
 export class JoiValidation implements Validation {
   constructor (
@@ -8,6 +8,11 @@ export class JoiValidation implements Validation {
   ) {}
 
   validate (inputs: object): ValidationResponse {
-    return this.schema.validate(inputs)
+    const { value, error, warning }: ValidationResult = this.schema.validate(inputs)
+    return {
+      value,
+      error: error.message ?? error.message,
+      warning: warning.message ?? warning.message
+    }
   }
 }
