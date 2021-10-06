@@ -2,20 +2,15 @@ import React from 'react'
 import { render, RenderResult } from '@testing-library/react'
 import Login from './login'
 
-type SutTypes = {
-  sut: RenderResult
-}
-
-const makeSut = (): SutTypes => {
-  const sut = render(<Login />)
-  return {
-    sut
-  }
-}
-
 describe('Login Component', () => {
+  let sut: RenderResult
+
+  beforeEach(() => {
+    sut = render(<Login />)
+  })
+
   test('should start with initial state', () => {
-    const { sut: { getByTestId } } = makeSut()
+    const { getByTestId } = sut
 
     const errorWrap = getByTestId('error-wrap')
     const submitButton = getByTestId('submit') as HTMLButtonElement
