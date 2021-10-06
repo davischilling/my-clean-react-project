@@ -1,7 +1,7 @@
 import React from 'react'
 import { cleanup, render, RenderResult, fireEvent } from '@testing-library/react'
 import Login from './login'
-import { ValidationStub } from '@/data/test/mock-validation'
+import { ValidationStub } from '@/data/test'
 
 import faker from 'faker'
 
