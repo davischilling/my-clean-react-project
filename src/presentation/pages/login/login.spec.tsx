@@ -31,7 +31,7 @@ const simulateValidSubmit = (sut: RenderResult, email?: string, password?: strin
   fireEvent.click(submitButton)
 }
 
-const history = createMemoryHistory()
+const history = createMemoryHistory({ initialEntries: ['/login'] })
 
 describe('Login Component', () => {
   let sut: RenderResult
@@ -201,7 +201,7 @@ describe('Login Component', () => {
     expect(errorWrap.childElementCount).toBe(1)
   })
 
-  test('should add accessToken to localstorage on success', async () => {
+  test('should add accessToken to localstorage on success and navigates to main page', async () => {
     const { getByTestId } = sut
 
     simulateValidSubmit(sut)
@@ -209,6 +209,8 @@ describe('Login Component', () => {
     await waitFor(() => getByTestId('form'))
 
     expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', authentication.account.accessToken)
+    expect(history.length).toBe(1)
+    expect(history.location.pathname).toBe('/')
   })
 
   test('should go to signup page', () => {
