@@ -1,5 +1,6 @@
-import { SurveyModel } from '@/domain/models'
+// import { SurveyModel } from '@/domain/models'
 
 export interface LoadSurveyList {
-  loadAll: () => Promise<SurveyModel>
+  // loadAll: () => Promise<SurveyModel>
+  loadAll: () => Promise<void>
 }
