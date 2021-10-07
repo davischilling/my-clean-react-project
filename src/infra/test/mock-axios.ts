@@ -1,7 +1,8 @@
 import { HttpPostClient } from '@/data/contracts/http'
+
 import faker from 'faker'
 
-export const mockPostRequest = (): HttpPostClient.Request<any> => ({
+export const mockPostRequest = (): HttpPostClient.Request => ({
   url: faker.internet.url(),
   body: faker.random.objectElement()
 })

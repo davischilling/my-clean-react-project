@@ -2,9 +2,9 @@ import { HttpPostClient } from '@/data/contracts/http'
 
 import axios, { AxiosResponse } from 'axios'
 
-export class AxiosHttpClient implements HttpPostClient<any, any> {
-  async post ({ url, body }: HttpPostClient.Request<any>): Promise<HttpPostClient.Response<any>> {
-    let httpResponse: AxiosResponse<any>
+export class AxiosHttpClient implements HttpPostClient {
+  async post ({ url, body }: HttpPostClient.Request): Promise<HttpPostClient.Response> {
+    let httpResponse: AxiosResponse
     try {
       httpResponse = await axios.post(url, body)
     } catch (err) {

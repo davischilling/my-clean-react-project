@@ -1,21 +1,20 @@
-import { AccountModel } from '@/domain/models'
-import { InvalidCredentialsError, UnexpectedError, ServerError, NotFoundError } from '@/data/error'
-import { mockAuthenticationParams } from '@/domain/test/mock-authentication'
-import { HttpPostClientSpy } from '@/data/test'
-import { RemoteAuthentication } from './remote-authentication'
 import { HttpStatusCode } from '@/data/contracts'
+import { InvalidCredentialsError, NotFoundError, ServerError, UnexpectedError } from '@/data/error'
+import { HttpPostClientSpy } from '@/data/test'
+import { AccountModel } from '@/domain/models'
+import { mockAccountModel } from '@/domain/test/mock-account'
+import { mockAuthenticationParams } from '@/domain/test/mock-authentication'
+import { RemoteAuthentication } from './remote-authentication'
 
 import faker from 'faker'
-import { Authentication } from '@/domain/usecases'
-import { mockAccountModel } from '@/domain/test/mock-account'
 
 type SutTypes = {
   sut: RemoteAuthentication
-  httpPostClientSpy: HttpPostClientSpy<Authentication.Params, AccountModel>
+  httpPostClientSpy: HttpPostClientSpy<AccountModel>
 }
 
 const makeSut = (url: string): SutTypes => {
-  const httpPostClientSpy = new HttpPostClientSpy<Authentication.Params, AccountModel>()
+  const httpPostClientSpy = new HttpPostClientSpy<AccountModel>()
   const sut = new RemoteAuthentication(url, httpPostClientSpy)
   return {
     sut,

@@ -12,7 +12,7 @@ const makeSut = (): AxiosHttpClient => {
 
 describe('AxiosHttpClient', () => {
   let mockedAxios: jest.Mocked<AxiosStatic>
-  let request: HttpPostClient.Request<any>
+  let request: HttpPostClient.Request
   let mockedAxiosResponse: any
   let sut: AxiosHttpClient
 
