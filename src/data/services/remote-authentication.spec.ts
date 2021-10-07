@@ -1,4 +1,4 @@
-import { AccountModel } from '@/domain/models/account-model'
+import { AccountModel } from '@/domain/models/account'
 import { InvalidCredentialsError, UnexpectedError, ServerError, NotFoundError } from '@/data/error'
 import { mockAuthenticationParams } from '@/domain/test/mock-authentication'
 import { HttpPostClientSpy } from '@/data/test'
