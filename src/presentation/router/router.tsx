@@ -1,5 +1,3 @@
-import { Login } from '@/presentation/pages'
-
 import React from 'react'
 import {
   BrowserRouter,
@@ -7,11 +5,15 @@ import {
   Route
 } from 'react-router-dom'
 
-const Router: React.FC = () => {
+type Props = {
+  makeLoginPage: React.FC
+}
+
+const Router: React.FC<Props> = ({ makeLoginPage }: Props) => {
   return (
     <BrowserRouter>
       <Switch>
-        <Route path="/login" exact component={Login} />
+        <Route path="/login" exact component={makeLoginPage} />
       </Switch>
     </BrowserRouter>
   )
