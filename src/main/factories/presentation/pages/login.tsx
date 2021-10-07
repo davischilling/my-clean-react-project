@@ -9,7 +9,7 @@ export const makeLoginPage: React.FC = () => {
   return (
     <Login
       validation={makeLoginValidations()}
-      authentication={makeRemoteAuthentication(`process.env.API_URL${path}`)}
+      authentication={makeRemoteAuthentication(`${process.env.API_URL}${path}`)}
     />
   )
 }
