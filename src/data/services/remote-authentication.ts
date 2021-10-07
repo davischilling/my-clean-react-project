@@ -1,4 +1,4 @@
-import { AccountModel } from '@/domain/models/account'
+import { AccountModel } from '@/domain/models'
 import { Authentication } from '@/domain/usecases'
 import { HttpPostClient, HttpStatusCode } from '@/data/contracts'
 import { InvalidCredentialsError, UnexpectedError, NotFoundError, ServerError } from '@/data/error'
