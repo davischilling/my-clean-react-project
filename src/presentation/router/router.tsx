@@ -7,13 +7,15 @@ import {
 
 type Props = {
   makeLoginPage: React.FC
+  makeSurveyListPage: React.FC
 }
 
-const Router: React.FC<Props> = ({ makeLoginPage }: Props) => {
+const Router: React.FC<Props> = ({ makeLoginPage, makeSurveyListPage }: Props) => {
   return (
     <BrowserRouter>
       <Switch>
         <Route path="/login" exact component={makeLoginPage} />
+        <Route path="/" exact component={makeSurveyListPage} />
       </Switch>
     </BrowserRouter>
   )
