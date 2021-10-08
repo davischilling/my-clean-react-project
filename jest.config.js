@@ -7,6 +7,10 @@ module.exports = {
     '!**/*.d.ts'
   ],
   coverageDirectory: 'coverage',
+  setupFilesAfterEnv: ['<rootDir>/src/main/config/jest-setup.ts'],
+  testPathIgnorePatterns: [
+    '<rootDir>/node_modules/'
+  ],
   testEnvironment: 'jsdom',
   transform: {
     '.+\\.(ts|tsx)$': 'ts-jest'
