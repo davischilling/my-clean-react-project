@@ -2,7 +2,6 @@ import Login from './login'
 import { InvalidCredentialsError } from '@/data/error'
 import { ValidationStub } from '@/data/test'
 import { AuthenticationStub } from '@/domain/test'
-import { mockValidationResponse } from '@/infra/test'
 
 import 'jest-localstorage-mock'
 import { waitFor, cleanup, fireEvent, render, RenderResult } from '@testing-library/react'
@@ -43,7 +42,6 @@ describe('Login Component', () => {
     localStorage.clear()
     const validation = new ValidationStub()
     validateSpy = jest.spyOn(validation, 'validate')
-    validateSpy.mockReturnValue(mockValidationResponse())
     authentication = new AuthenticationStub()
     authenticationSpy = jest.spyOn(authentication, 'auth')
 
