@@ -1,3 +1,4 @@
+import { mockSurveyListModel } from '@/domain/test'
 import { SurveyModel } from '@/domain/models/survey'
 import { UnexpectedError } from '@/data/error/unexpected'
 import { HttpStatusCode } from '@/data/contracts/http'
@@ -51,5 +52,17 @@ describe('RemoteLoadSurvey', () => {
     const promise = sut.loadAll()
 
     await expect(promise).rejects.toThrow(new UnexpectedError())
+  })
+
+  test('should return a list of surveys if HttpPostClient returns 200', async () => {
+    const httpResult = mockSurveyListModel()
+    httpGetClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+      data: httpResult
+    }
+
+    const surveyList = await sut.loadAll()
+
+    expect(surveyList).toEqual(httpResult)
   })
 })

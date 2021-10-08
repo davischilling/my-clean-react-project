@@ -9,11 +9,11 @@ export class RemoteLoadSurvey implements LoadSurveyList {
     private readonly httpGetClient: HttpGetClient<SurveyModel[]>
   ) {}
 
-  async loadAll (): Promise<void> {
+  async loadAll (): Promise<SurveyModel[]> {
     const httpResponse = await this.httpGetClient.get({ url: this.url })
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
-        break
+        return httpResponse.data
       default:
         throw new UnexpectedError()
     }
