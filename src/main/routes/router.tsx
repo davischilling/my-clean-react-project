@@ -4,13 +4,9 @@ import {
   Switch,
   Route
 } from 'react-router-dom'
+import { makeLoginPage, makeSurveyListPage } from '@/main/factories/presentation'
 
-type Props = {
-  makeLoginPage: React.FC
-  makeSurveyListPage: React.FC
-}
-
-const Router: React.FC<Props> = ({ makeLoginPage, makeSurveyListPage }: Props) => {
+const Router: React.FC = () => {
   return (
     <BrowserRouter>
       <Switch>
