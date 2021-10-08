@@ -1,6 +1,6 @@
 import { HttpResponse } from './http'
 
-export interface HttpGetClient<R> {
+export interface HttpGetClient<R = any> {
   get: (params: HttpGetClient.Request) => Promise<HttpGetClient.Response<R>>
 }
 
