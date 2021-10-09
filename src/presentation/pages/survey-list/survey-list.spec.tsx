@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, cleanup, RenderResult, waitFor } from '@testing-library/react'
+import { render, cleanup, RenderResult, waitFor, fireEvent } from '@testing-library/react'
 
 import { SurveyList } from '@/presentation/pages'
 import { LoadSurveyListStub } from '@/data/test'
@@ -56,5 +56,16 @@ describe('SurveyList Page', () => {
 
     expect(sut.queryByTestId('survey-list')).not.toBeInTheDocument()
     expect(sut.queryByTestId('error')).toHaveTextContent(error.message)
+  })
+
+  test('should call LoadSurveyList on reload button click', async () => {
+    jest.spyOn(loadSurveyList, 'loadAll').mockRejectedValueOnce(new UnexpectedError())
+
+    const sut = makeSut(loadSurveyList)
+    await waitFor(() => sut.getByRole('heading'))
+    fireEvent.click(sut.getByTestId('reload'))
+
+    expect(loadSurveyListSpy).toHaveBeenCalledTimes(2)
+    await waitFor(() => sut.getByRole('heading'))
   })
 })
