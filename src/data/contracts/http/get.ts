@@ -7,6 +7,7 @@ export interface HttpGetClient<R = any> {
 export namespace HttpGetClient {
   export type Request = {
     url: string
+    headers?: any
   }
   export type Response<R = any> = HttpResponse<R>
 }
