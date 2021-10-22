@@ -9,6 +9,7 @@ import faker from 'faker'
 import React from 'react'
 import { Router } from 'react-router-dom'
 import { createMemoryHistory } from 'history'
+import { LocalStorageAdapterStub } from '@/infra/test'
 
 const populateEmailField = (sut: RenderResult, email: string = faker.internet.email()): void => {
   const { getByTestId } = sut
@@ -37,17 +38,21 @@ describe('Login Component', () => {
   let validateSpy: jest.SpyInstance
   let authenticationSpy: jest.SpyInstance
   let authentication: AuthenticationStub
+  let localstorage: LocalStorageAdapterStub
+  let localstorageSetSpy: jest.SpyInstance
 
   beforeEach(() => {
-    localStorage.clear()
+    // localStorage.clear()
     const validation = new ValidationStub()
     validateSpy = jest.spyOn(validation, 'validate')
     authentication = new AuthenticationStub()
     authenticationSpy = jest.spyOn(authentication, 'auth')
+    localstorage = new LocalStorageAdapterStub()
+    localstorageSetSpy = jest.spyOn(localstorage, 'set')
 
     sut = render(
       <Router history={history} >
-        <Login validation={validation} authentication={authentication} />
+        <Login validation={validation} authentication={authentication} localstorage={localstorage} />
       </Router>
     )
   })
@@ -206,7 +211,9 @@ describe('Login Component', () => {
 
     await waitFor(() => getByTestId('form'))
 
-    expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', authentication.account.accessToken)
+    expect(localstorageSetSpy).toHaveBeenCalledWith('accessToken', {
+      accessToken: authentication.account.accessToken
+    })
     expect(history.length).toBe(1)
     expect(history.location.pathname).toBe('/')
   })

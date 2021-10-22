@@ -6,13 +6,15 @@ import Styles from './login-styles.scss'
 import React, { useState } from 'react'
 import { Authentication } from '@/domain/usecases'
 import { Link, useHistory } from 'react-router-dom'
+import { LocalStorageAdapter } from '@/infra/cache'
 
 type Props = {
   validation: Validation
   authentication: Authentication
+  localstorage: LocalStorageAdapter
 }
 
-const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
+const Login: React.FC<Props> = ({ validation, authentication, localstorage }: Props) => {
   const history = useHistory()
   const [state, setState] = useState({
     isLoading: false,
@@ -34,7 +36,9 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
         email: state.email,
         password: state.password
       })
-      localStorage.setItem('accessToken', account.accessToken)
+      localstorage.set('accessToken', {
+        accessToken: account.accessToken
+      })
       history.replace('/')
     } catch (err) {
       setState({
