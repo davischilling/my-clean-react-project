@@ -1,7 +1,7 @@
 import { HttpPostClient, HttpStatusCode } from '@/data/contracts'
 import { AccountModel } from '@/domain/models'
 import { AddAccount } from '@/domain/usecases'
-import { EmailInUseError, UnexpectedError } from '@/data/error'
+import { EmailInUseError, ServerError, UnexpectedError } from '@/data/error'
 
 export class RemoteAddAccount {
   constructor (
@@ -19,6 +19,8 @@ export class RemoteAddAccount {
         return
       case (HttpStatusCode.forbidden):
         throw new EmailInUseError()
+      case (HttpStatusCode.serverError):
+        throw new ServerError()
       default:
         throw new UnexpectedError()
     }
