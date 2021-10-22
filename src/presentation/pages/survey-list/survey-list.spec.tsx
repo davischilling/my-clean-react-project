@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, cleanup, RenderResult, waitFor, fireEvent } from '@testing-library/react'
+import { render, cleanup, RenderResult, waitFor, fireEvent, screen } from '@testing-library/react'
 
 import { SurveyList } from '@/presentation/pages'
 import { LoadSurveyListStub } from '@/data/test'
@@ -22,25 +22,26 @@ describe('SurveyList Page', () => {
 
   afterEach(cleanup)
 
-  test('should render 4 empty items on start', () => {
-    const sut = makeSut(loadSurveyList)
-    const surveyList = sut.getByTestId('survey-list')
+  test('should render 4 empty items on start', async () => {
+    makeSut(loadSurveyList)
+    const surveyList = screen.getByTestId('survey-list')
 
     expect(surveyList.querySelectorAll('li:empty')).toHaveLength(4)
-    expect(sut.queryByTestId('error')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('error')).not.toBeInTheDocument()
+    await waitFor(() => surveyList)
   })
 
   test('should call LoadSurveyList', async () => {
-    const sut = makeSut(loadSurveyList)
+    makeSut(loadSurveyList)
 
     expect(loadSurveyListSpy).toHaveBeenCalledTimes(1)
-    expect(sut.queryByTestId('error')).not.toBeInTheDocument()
-    await waitFor(() => sut.getByRole('heading'))
+    expect(screen.queryByTestId('error')).not.toBeInTheDocument()
+    await waitFor(() => screen.getByRole('heading'))
   })
 
   test('should render SurveyItems on success', async () => {
-    const sut = makeSut(loadSurveyList)
-    const surveyList = sut.getByTestId('survey-list')
+    makeSut(loadSurveyList)
+    const surveyList = screen.getByTestId('survey-list')
 
     await waitFor(() => surveyList)
 
@@ -51,21 +52,21 @@ describe('SurveyList Page', () => {
     const error = new UnexpectedError()
     jest.spyOn(loadSurveyList, 'loadAll').mockRejectedValueOnce(error)
 
-    const sut = makeSut(loadSurveyList)
-    await waitFor(() => sut.getByRole('heading'))
+    makeSut(loadSurveyList)
+    await waitFor(() => screen.getByRole('heading'))
 
-    expect(sut.queryByTestId('survey-list')).not.toBeInTheDocument()
-    expect(sut.queryByTestId('error')).toHaveTextContent(error.message)
+    expect(screen.queryByTestId('survey-list')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('error')).toHaveTextContent(error.message)
   })
 
   test('should call LoadSurveyList on reload button click', async () => {
     jest.spyOn(loadSurveyList, 'loadAll').mockRejectedValueOnce(new UnexpectedError())
 
-    const sut = makeSut(loadSurveyList)
-    await waitFor(() => sut.getByRole('heading'))
-    fireEvent.click(sut.getByTestId('reload'))
+    makeSut(loadSurveyList)
+    await waitFor(() => screen.getByRole('heading'))
+    fireEvent.click(screen.getByTestId('reload'))
 
     expect(loadSurveyListSpy).toHaveBeenCalledTimes(2)
-    await waitFor(() => sut.getByRole('heading'))
+    await waitFor(() => screen.getByRole('heading'))
   })
 })
