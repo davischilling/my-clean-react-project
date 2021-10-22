@@ -52,7 +52,7 @@ describe('Login Component', () => {
 
     sut = render(
       <Router history={history} >
-        <Login validation={validation} authentication={authentication} localstorage={localstorage} />
+        <Login validation={validation} authentication={authentication} cache={localstorage} />
       </Router>
     )
   })

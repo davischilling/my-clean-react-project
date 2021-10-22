@@ -10,7 +10,7 @@ export const makeLoginPage: React.FC = () => {
     <Login
       validation={makeLoginValidations()}
       authentication={makeRemoteAuthentication(`${process.env.API_URL}${path}`)}
-      localstorage={makeLocalstorageAdapter()}
+      cache={makeLocalstorageAdapter()}
     />
   )
 }

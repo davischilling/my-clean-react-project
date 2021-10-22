@@ -11,10 +11,10 @@ import { LocalStorageAdapter } from '@/infra/cache'
 type Props = {
   validation: Validation
   authentication: Authentication
-  localstorage: LocalStorageAdapter
+  cache: LocalStorageAdapter
 }
 
-const Login: React.FC<Props> = ({ validation, authentication, localstorage }: Props) => {
+const Login: React.FC<Props> = ({ validation, authentication, cache }: Props) => {
   const history = useHistory()
   const [state, setState] = useState({
     isLoading: false,
@@ -36,7 +36,7 @@ const Login: React.FC<Props> = ({ validation, authentication, localstorage }: Pr
         email: state.email,
         password: state.password
       })
-      localstorage.set('accessToken', {
+      cache.set('accessToken', {
         accessToken: account.accessToken
       })
       history.replace('/')
