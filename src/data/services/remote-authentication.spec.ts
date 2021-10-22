@@ -3,7 +3,7 @@ import { InvalidCredentialsError, NotFoundError, ServerError, UnexpectedError } 
 import { HttpPostClientSpy } from '@/data/test'
 import { AccountModel } from '@/domain/models'
 import { mockAccountModel } from '@/domain/test/mock-account'
-import { mockAuthenticationParams } from '@/domain/test/mock-authentication'
+import { mockAuthenticationParams } from '@/domain/test'
 import { RemoteAuthentication } from './remote-authentication'
 
 import faker from 'faker'
