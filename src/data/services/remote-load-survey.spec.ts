@@ -2,7 +2,7 @@ import { mockSurveyListModel } from '@/domain/test'
 import { SurveyModel } from '@/domain/models/survey'
 import { UnexpectedError } from '@/data/error/unexpected'
 import { HttpStatusCode } from '@/data/contracts/http'
-import { HttpGetClientSpy } from '@/data/test/mock-http-get-client'
+import { HttpGetClientSpy } from '@/data/test'
 import { RemoteLoadSurvey } from './remote-load-survey'
 
 import faker from 'faker'
