@@ -4,7 +4,14 @@ import Joi from 'joi'
 
 const passwordPattern = /^[a-zA-Z0-9]{3,30}$/
 
-export const loginValidations: SchemaField[] = [
+export const signUpValidations: SchemaField[] = [
+  {
+    field: 'name',
+    schema: Joi.object({
+      name: Joi.string()
+        .required()
+    })
+  },
   {
     field: 'email',
     schema: Joi.object({
@@ -20,5 +27,13 @@ export const loginValidations: SchemaField[] = [
         .pattern(new RegExp(passwordPattern)).required()
     })
       .xor('password')
+  },
+  {
+    field: 'passwordConfirmation',
+    schema: Joi.object({
+      password: Joi.string(),
+      passwordConfirmation: Joi.string()
+        .required().valid(Joi.ref('password'))
+    })
   }
 ]

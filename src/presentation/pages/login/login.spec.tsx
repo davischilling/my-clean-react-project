@@ -79,14 +79,14 @@ describe('Login Component', () => {
     const email = faker.internet.email()
     populateEmailField(sut, email)
 
-    expect(validateSpy).toHaveBeenCalledWith({ email })
+    expect(validateSpy).toHaveBeenCalledWith('email', { email })
   })
 
   test('should call Validation with correct password', () => {
     const password = faker.internet.password()
     populatePasswordField(sut, password)
 
-    expect(validateSpy).toHaveBeenCalledWith({ password })
+    expect(validateSpy).toHaveBeenCalledWith('password', { password })
   })
 
   test('should show email error if Validation fails', () => {
