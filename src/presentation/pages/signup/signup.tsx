@@ -8,6 +8,7 @@ import { Authentication } from '@/domain/usecases'
 import { Link, useHistory } from 'react-router-dom'
 import { LocalStorageAdapter } from '@/infra/cache'
 import { useValidation } from '@/presentation/hooks'
+import { SignUpType } from './signup-type'
 
 type Props = {
   validation: Validation
@@ -18,7 +19,7 @@ type Props = {
 const SignUp: React.FC<Props> = ({ validation, authentication, cache }: Props) => {
   const history = useHistory()
   const defaultErrorMessage = 'Campo obrigatório'
-  const [state, setState] = useState({
+  const [state, setState] = useState<SignUpType>({
     isLoading: false,
     name: '',
     email: '',
@@ -29,31 +30,32 @@ const SignUp: React.FC<Props> = ({ validation, authentication, cache }: Props) =
     passwordError: defaultErrorMessage,
     passwordConfirmationError: defaultErrorMessage,
     mainErrorMessage: '',
-    fieldToValidate: ''
+    fieldToValidate: '',
+    isFormValid: false
   })
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault()
-    //   try {
-    //     if (state.isLoading || state.emailError || state.passwordError) {
-    //       return
-    //     }
-    //     setState({ ...state, isLoading: true })
-    //     const account = await authentication.auth({
-    //       email: state.email,
-    //       password: state.password
-    //     })
-    //     cache.set('accessToken', {
-    //       accessToken: account.accessToken
-    //     })
-    history.replace('/')
-    //   } catch (err) {
-    //     setState({
-    //       ...state,
-    //       isLoading: false,
-    //       mainErrorMessage: err.message
-    //     })
-    //   }
+    try {
+      if (state.isLoading || !state.isFormValid) {
+        return
+      }
+      setState({ ...state, isLoading: true })
+      const account = await authentication.auth({
+        email: state.email,
+        password: state.password
+      })
+      cache.set('accessToken', {
+        accessToken: account.accessToken
+      })
+      history.replace('/')
+    } catch (err) {
+      setState({
+        ...state,
+        isLoading: false,
+        mainErrorMessage: err.message
+      })
+    }
   }
 
   useEffect(() => {
@@ -88,7 +90,7 @@ const SignUp: React.FC<Props> = ({ validation, authentication, cache }: Props) =
           <Input type="email" name="email" placeholder="Digite seu e-mail" />
           <Input type="password" name="password" placeholder="Digite sua senha" />
           <Input type="password" name="passwordConfirmation" placeholder="Confirme sua senha" />
-          <button data-testid="submit" disabled={!!state.emailError || !!state.passwordError} className={Styles.submit} type="submit">Entrar</button>
+          <button data-testid="submit" disabled={!state.isFormValid} className={Styles.submit} type="submit">Entrar</button>
           <Link data-testid="signup-page" to="/login" className={Styles.link}>Login</Link>
           <FormStatus />
         </form>

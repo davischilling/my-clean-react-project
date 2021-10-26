@@ -2,7 +2,7 @@ import { Validation } from '@/data/contracts'
 import React from 'react'
 
 export const useValidation = (
-  state: { fieldToValidate: string },
+  state: { fieldToValidate: string, isFormValid: boolean },
   setState: React.Dispatch<React.SetStateAction<{}>>,
   objToValidate: object,
   validation: Validation,
@@ -10,22 +10,34 @@ export const useValidation = (
 ): void => {
   if (state[state.fieldToValidate] !== '') {
     const { error } = validation.validate(state.fieldToValidate[0], objToValidate)
-    if (error !== undefined) {
-      setState({
-        ...state,
-        [`${state.fieldToValidate}Error`]: error
-      })
+    if (error) {
+      setState(prevState => ({
+        ...prevState,
+        [`${state.fieldToValidate}Error`]: error,
+        isFormValid: false
+      }))
     } else {
-      setState({
-        ...state,
-        [`${state.fieldToValidate}Error`]: ''
+      setState(prevState => {
+        let error: boolean = true
+        for (const field in prevState) {
+          if (field.includes('Error') && field !== `${state.fieldToValidate}Error` && prevState[field] !== '') {
+            error = false
+          }
+        }
+        const prev = ({
+          ...prevState,
+          [`${state.fieldToValidate}Error`]: '',
+          isFormValid: error
+        })
+        return prev
       })
     }
-  } else if (state[`${state.fieldToValidate}Error`] !== defaultMessage) {
-    setState({
-      ...state,
-      [`${state.fieldToValidate}Error`]: defaultMessage
-    })
+  } else {
+    setState(prevState => ({
+      ...prevState,
+      [`${state.fieldToValidate}Error`]: defaultMessage,
+      isFormValid: false
+    }))
   }
 }
 

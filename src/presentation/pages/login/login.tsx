@@ -8,6 +8,7 @@ import { Authentication } from '@/domain/usecases'
 import { Link, useHistory } from 'react-router-dom'
 import { LocalStorageAdapter } from '@/infra/cache'
 import { useValidation } from '@/presentation/hooks'
+import { LoginType } from './login-type'
 
 type Props = {
   validation: Validation
@@ -19,20 +20,21 @@ const Login: React.FC<Props> = ({ validation, authentication, cache }: Props) =>
   const history = useHistory()
   const defaultErrorMessage = 'Campo obrigatório'
 
-  const [state, setState] = useState({
+  const [state, setState] = useState<LoginType>({
     isLoading: false,
     email: '',
     password: '',
     emailError: defaultErrorMessage,
     passwordError: defaultErrorMessage,
     mainErrorMessage: '',
-    fieldToValidate: ''
+    fieldToValidate: '',
+    isFormValid: false
   })
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault()
     try {
-      if (state.isLoading || state.emailError || state.passwordError) {
+      if (state.isLoading || !state.isFormValid) {
         return
       }
       setState({ ...state, isLoading: true })
@@ -75,7 +77,7 @@ const Login: React.FC<Props> = ({ validation, authentication, cache }: Props) =>
           <h2>Login</h2>
           <Input type="email" name="email" placeholder="Digite seu e-mail" />
           <Input type="password" name="password" placeholder="Digite sua senha" />
-          <button data-testid="submit" disabled={!!state.emailError || !!state.passwordError} className={Styles.submit} type="submit">Entrar</button>
+          <button data-testid="submit" disabled={!state.isFormValid} className={Styles.submit} type="submit">Entrar</button>
           <Link data-testid="signup-page" to="/signup" className={Styles.link}>Criar conta</Link>
           <FormStatus />
         </form>
