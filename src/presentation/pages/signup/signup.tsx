@@ -1,22 +1,21 @@
 import { Validation } from '@/data/contracts'
-import { Footer, FormStatus, Input, LoginHeader } from '@/presentation/components'
-import { FormContext } from '@/presentation/contexts'
-import Styles from './signup-styles.scss'
-
-import React, { useEffect, useState } from 'react'
-import { Authentication } from '@/domain/usecases'
-import { Link, useHistory } from 'react-router-dom'
+import { AddAccount } from '@/domain/usecases'
 import { LocalStorageAdapter } from '@/infra/cache'
+import { Footer, FormStatus, Input, LoginHeader, SubmitButton } from '@/presentation/components'
+import { FormContext } from '@/presentation/contexts'
 import { useValidation } from '@/presentation/hooks'
+import React, { useEffect, useState } from 'react'
+import { Link, useHistory } from 'react-router-dom'
+import Styles from './signup-styles.scss'
 import { SignUpType } from './signup-type'
 
 type Props = {
   validation: Validation
-  authentication: Authentication
+  addAccount: AddAccount
   cache: LocalStorageAdapter
 }
 
-const SignUp: React.FC<Props> = ({ validation, authentication, cache }: Props) => {
+const SignUp: React.FC<Props> = ({ validation, addAccount, cache }: Props) => {
   const history = useHistory()
   const defaultErrorMessage = 'Campo obrigatório'
   const [state, setState] = useState<SignUpType>({
@@ -41,9 +40,11 @@ const SignUp: React.FC<Props> = ({ validation, authentication, cache }: Props) =
         return
       }
       setState({ ...state, isLoading: true })
-      const account = await authentication.auth({
+      const account = await addAccount.add({
+        name: state.name,
         email: state.email,
-        password: state.password
+        password: state.password,
+        passwordConfirmation: state.passwordConfirmation
       })
       cache.set('accessToken', {
         accessToken: account.accessToken
@@ -90,7 +91,7 @@ const SignUp: React.FC<Props> = ({ validation, authentication, cache }: Props) =
           <Input type="email" name="email" placeholder="Digite seu e-mail" />
           <Input type="password" name="password" placeholder="Digite sua senha" />
           <Input type="password" name="passwordConfirmation" placeholder="Confirme sua senha" />
-          <button data-testid="submit" disabled={!state.isFormValid} className={Styles.submit} type="submit">Entrar</button>
+          <SubmitButton text="Cadastrar" />
           <Link data-testid="signup-page" to="/login" className={Styles.link}>Login</Link>
           <FormStatus />
         </form>

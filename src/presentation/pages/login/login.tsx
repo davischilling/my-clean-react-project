@@ -1,5 +1,5 @@
 import { Validation } from '@/data/contracts'
-import { Footer, FormStatus, Input, LoginHeader } from '@/presentation/components'
+import { Footer, FormStatus, Input, LoginHeader, SubmitButton } from '@/presentation/components'
 import { FormContext } from '@/presentation/contexts'
 import Styles from './login-styles.scss'
 
@@ -77,7 +77,7 @@ const Login: React.FC<Props> = ({ validation, authentication, cache }: Props) =>
           <h2>Login</h2>
           <Input type="email" name="email" placeholder="Digite seu e-mail" />
           <Input type="password" name="password" placeholder="Digite sua senha" />
-          <button data-testid="submit" disabled={!state.isFormValid} className={Styles.submit} type="submit">Entrar</button>
+          <SubmitButton text="Entrar" />
           <Link data-testid="signup-page" to="/signup" className={Styles.link}>Criar conta</Link>
           <FormStatus />
         </form>
