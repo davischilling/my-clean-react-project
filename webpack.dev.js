@@ -14,12 +14,12 @@ module.exports = merge(common, {
       test: /\.scss$/,
       use: [{
         loader: 'style-loader'
-      },{
+      }, {
         loader: 'css-loader',
         options: {
           modules: true
         }
-      },{
+      }, {
         loader: 'sass-loader'
       }]
     }]
@@ -29,7 +29,11 @@ module.exports = merge(common, {
     devMiddleware: {
       writeToDisk: true
     },
-    historyApiFallback: true
+    static: {
+      directory: './public'
+    },
+    historyApiFallback: true,
+    port: 8080
   },
   plugins: [
     new DefinePlugin({
