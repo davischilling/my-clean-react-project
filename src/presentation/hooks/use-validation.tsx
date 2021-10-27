@@ -11,9 +11,10 @@ export const useValidation = (
   if (state[state.fieldToValidate] !== '') {
     const { error } = validation.validate(state.fieldToValidate[0], objToValidate)
     if (error) {
+      const errorMessage = `${state.fieldToValidate} inválido`
       setState(prevState => ({
         ...prevState,
-        [`${state.fieldToValidate}Error`]: error,
+        [`${state.fieldToValidate}Error`]: errorMessage.charAt(0).toUpperCase() + errorMessage.slice(1),
         isFormValid: false
       }))
     } else {
