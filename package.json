@@ -11,7 +11,7 @@
     "test:watch": "npm test -- --watch",
     "test:staged": "npm test -- --findRelatedTests",
     "test:ci": "npm test -- --coverage",
-    "test:cypress": "cypress open",
+    "test:cypress": "cypress open --project src/main/test",
     "eslint": "npx eslint 'src/**'",
     "prepare": "husky install"
   },
