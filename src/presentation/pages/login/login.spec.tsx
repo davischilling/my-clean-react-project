@@ -92,7 +92,7 @@ describe('Login Component', () => {
   test('should show email error if Validation fails', () => {
     const validateResponse = {
       value: 'email',
-      error: faker.random.words()
+      error: 'Email inválido'
     }
     validateSpy.mockReturnValueOnce(validateResponse)
 
@@ -107,7 +107,7 @@ describe('Login Component', () => {
   test('should show password error if Validation fails', () => {
     const validateResponse = {
       value: 'password',
-      error: faker.random.words()
+      error: 'Password inválido'
     }
     validateSpy.mockReturnValueOnce(validateResponse)
 
