@@ -73,7 +73,12 @@ const Login: React.FC<Props> = ({ validation, authentication, cache }: Props) =>
     <div className={Styles.loginWrap}>
       <LoginHeader />
       <FormContext.Provider value={{ state, setState, validation }}>
-        <form data-testid="form" onSubmit={handleSubmit} className={Styles.form}>
+        <form
+          data-testid="form"
+          onSubmit={handleSubmit}
+          className={Styles.form}
+          autoComplete="off"
+        >
           <h2>Login</h2>
           <Input type="email" name="email" placeholder="Digite seu e-mail" />
           <Input type="password" name="password" placeholder="Digite sua senha" />

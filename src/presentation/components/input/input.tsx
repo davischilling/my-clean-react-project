@@ -1,42 +1,45 @@
 import Styles from './input-styles.scss'
 import { FormContext } from '@/presentation/contexts'
 
-import React, { useContext } from 'react'
+import React, { useContext, useRef } from 'react'
 
 type Props = React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
 
 const Input: React.FC<Props> = (props: Props) => {
   const { state, setState } = useContext(FormContext)
+  const inputRef = useRef<HTMLInputElement>()
   const error = state[`${props.name}Error`]
 
-  const handleChange = (event: React.FocusEvent<HTMLInputElement>): void => {
+  const handleChange = (e: React.FocusEvent<HTMLInputElement>): void => {
     setState({
       ...state,
-      [event.target.name]: event.target.value,
-      fieldToValidate: [event.target.name]
+      [e.target.name]: e.target.value,
+      fieldToValidate: [e.target.name]
     })
-  }
-
-  const enableInput = (event: React.FocusEvent<HTMLInputElement>): void => {
-    event.target.readOnly = false
-  }
-
-  const getStatus = (): string => {
-    return error ? '🔴' : '🟢'
-  }
-
-  const getTitle = (): string => {
-    if (props.name !== '' && error === '') {
-      return 'Tudo certo!'
-    } else {
-      return error
-    }
   }
 
   return (
     <div className={Styles.inputWrap}>
-      <input {...props} data-testid={props.name} readOnly onFocus={enableInput} onChange={handleChange} />
-      <span data-testid={`${props.name}-status`} title={getTitle()} className={Styles.status}>{getStatus()}</span>
+      <input
+        {...props}
+        ref={inputRef}
+        placeholder=' '
+        data-testid={props.name}
+        readOnly onFocus={e => { e.target.readOnly = false }}
+        onChange={handleChange}
+      />
+      <label
+        htmlFor="placeholder"
+        onClick={() => inputRef.current.focus()}
+      >
+        {props.placeholder}
+      </label>
+      <span
+        data-testid={`${props.name}-status`}
+        title={error || 'Tudo certo!'}
+        className={Styles.status}>
+          {error ? '🔴' : '🟢'}
+      </span>
     </div>
   )
 }

@@ -85,7 +85,12 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, cache }: Props) => {
     <div className={Styles.signupWrap}>
       <LoginHeader />
       <FormContext.Provider value={{ state, setState, validation }}>
-        <form data-testid="form" onSubmit={handleSubmit} className={Styles.form}>
+        <form
+          data-testid="form"
+          onSubmit={handleSubmit}
+          className={Styles.form}
+          autoComplete="off"
+        >
           <h2>Criar Conta</h2>
           <Input type="text" name="name" placeholder="Digite seu nome" />
           <Input type="email" name="email" placeholder="Digite seu e-mail" />
