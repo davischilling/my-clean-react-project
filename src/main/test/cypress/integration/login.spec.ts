@@ -71,8 +71,7 @@ describe('Login', () => {
       },
     })
     cy.getByTestId('email').focus().type(faker.internet.email())
-    cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5))
-    cy.getByTestId('submit').click()
+    cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5)).type('{enter}')
     cy.getByTestId('main-error').should('not.exist')
     cy.getByTestId('spinner').should('not.exist')
     cy.url().should('eq', `${baseUrl}/`)
@@ -90,5 +89,16 @@ describe('Login', () => {
     cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5))
     cy.getByTestId('submit').dblclick()
     cy.wait('@request').then(() => cy.get('@request.all').should('have.length', 1))
+  })
+
+  it('Should not call submit if form is invalid', () => {
+    cy.intercept('POST', /login/, {
+      statusCode: 200,
+      response: {
+        accessToken: faker.datatype.uuid()
+      },
+    }).as('request')
+    cy.getByTestId('email').focus().type(faker.internet.email()).type('{enter}')
+    cy.get('@request.all').should('have.length', 0)
   })
 })
