@@ -62,17 +62,27 @@ describe('Login Component', () => {
   test('should start with initial state', () => {
     const { getByTestId } = sut
 
-    const errorWrap = getByTestId('error-wrap')
-    const emailStatus = getByTestId('email-status')
-    const passwordStatus = getByTestId('password-status')
-    const submitButton = getByTestId('submit') as HTMLButtonElement
+    const emailWrap = getByTestId('email-wrap')
+    const email = getByTestId('email')
+    const emailLabel = getByTestId('email-label')
 
-    expect(errorWrap.childElementCount).toBe(0)
+    const passwordWrap = getByTestId('password-wrap')
+    const password = getByTestId('password')
+    const passwordLabel = getByTestId('password-label')
+
+    const submitButton = getByTestId('submit') as HTMLButtonElement
+    const errorWrap = getByTestId('error-wrap')
+
+    expect(emailWrap.getAttribute('data-status')).toBe('invalid')
+    expect(email.title).toBe('Campo obrigatório')
+    expect(emailLabel.title).toBe('Campo obrigatório')
+
+    expect(passwordWrap.getAttribute('data-status')).toBe('invalid')
+    expect(password.title).toBe('Campo obrigatório')
+    expect(passwordLabel.title).toBe('Campo obrigatório')
+
     expect(submitButton.disabled).toBe(true)
-    expect(emailStatus.title).toBe('Campo obrigatório')
-    expect(emailStatus.textContent).toBe('🔴')
-    expect(passwordStatus.title).toBe('Campo obrigatório')
-    expect(passwordStatus.textContent).toBe('🔴')
+    expect(errorWrap.childElementCount).toBe(0)
   })
 
   test('should call Validation with correct email', () => {
@@ -98,10 +108,11 @@ describe('Login Component', () => {
 
     const { getByTestId } = sut
     populateEmailField(sut)
-    const emailStatus = getByTestId('email-status')
+    const email = getByTestId('email')
+    const emailLabel = getByTestId('email-label')
 
-    expect(emailStatus.title).toBe(validateResponse.error)
-    expect(emailStatus.textContent).toBe('🔴')
+    expect(email.title).toBe(validateResponse.error)
+    expect(emailLabel.title).toBe(validateResponse.error)
   })
 
   test('should show password error if Validation fails', () => {
@@ -113,25 +124,28 @@ describe('Login Component', () => {
 
     const { getByTestId } = sut
     populatePasswordField(sut)
-    const passwordStatus = getByTestId('password-status')
+    const password = getByTestId('password')
+    const passwordLabel = getByTestId('password-label')
 
-    expect(passwordStatus.title).toBe(validateResponse.error)
-    expect(passwordStatus.textContent).toBe('🔴')
+    expect(password.title).toBe(validateResponse.error)
+    expect(passwordLabel.title).toBe(validateResponse.error)
   })
 
   test('should show valid state if Validation succeeds', () => {
     const { getByTestId } = sut
 
     populateEmailField(sut)
-    const emailStatus = getByTestId('email-status')
+    const email = getByTestId('email')
+    const emailLabel = getByTestId('email-label')
 
     populatePasswordField(sut)
-    const passwordStatus = getByTestId('password-status')
+    const password = getByTestId('password')
+    const passwordLabel = getByTestId('password-label')
 
-    expect(emailStatus.title).toBe('Tudo certo!')
-    expect(emailStatus.textContent).toBe('🟢')
-    expect(passwordStatus.title).toBe('Tudo certo!')
-    expect(passwordStatus.textContent).toBe('🟢')
+    expect(email.title).toBeFalsy()
+    expect(emailLabel.title).toBeFalsy()
+    expect(password.title).toBeFalsy()
+    expect(passwordLabel.title).toBeFalsy()
   })
 
   test('should disable submit button only if form is invalid', () => {
