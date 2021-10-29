@@ -2,14 +2,13 @@ import Login from './login'
 import { InvalidCredentialsError } from '@/data/error'
 import { ValidationStub } from '@/data/test'
 import { AuthenticationStub } from '@/domain/test'
-
+import { ApiContext } from '@/presentation/contexts'
 import 'jest-localstorage-mock'
 import { waitFor, cleanup, fireEvent, render, RenderResult } from '@testing-library/react'
 import faker from 'faker'
 import React from 'react'
 import { Router } from 'react-router-dom'
 import { createMemoryHistory } from 'history'
-import { LocalStorageAdapterStub } from '@/infra/test'
 
 const populateEmailField = (sut: RenderResult, email: string = faker.internet.email()): void => {
   const { getByTestId } = sut
@@ -38,22 +37,26 @@ describe('Login Component', () => {
   let validateSpy: jest.SpyInstance
   let authenticationSpy: jest.SpyInstance
   let authentication: AuthenticationStub
-  let localstorage: LocalStorageAdapterStub
-  let localstorageSetSpy: jest.SpyInstance
+  let setCurrentAccountMock: typeof jest.fn
 
   beforeEach(() => {
-    // localStorage.clear()
     const validation = new ValidationStub()
     validateSpy = jest.spyOn(validation, 'validate')
     authentication = new AuthenticationStub()
     authenticationSpy = jest.spyOn(authentication, 'auth')
-    localstorage = new LocalStorageAdapterStub()
-    localstorageSetSpy = jest.spyOn(localstorage, 'set')
+    setCurrentAccountMock = jest.fn()
 
     sut = render(
-      <Router history={history} >
-        <Login validation={validation} authentication={authentication} cache={localstorage} />
-      </Router>
+      <ApiContext.Provider value={{
+        setCurrentAccount: setCurrentAccountMock
+      }}>
+        <Router history={history} >
+          <Login
+            validation={validation}
+            authentication={authentication}
+          />
+        </Router>
+      </ApiContext.Provider>
     )
   })
 
@@ -218,27 +221,16 @@ describe('Login Component', () => {
     expect(errorWrap.childElementCount).toBe(1)
   })
 
-  test('should add accessToken to localstorage on success and navigates to main page', async () => {
+  test('should call setCurrentAccount on success and navigates to main page', async () => {
     const { getByTestId } = sut
 
     simulateValidSubmit(sut)
 
     await waitFor(() => getByTestId('form'))
 
-    expect(localstorageSetSpy).toHaveBeenCalledWith('accessToken', {
-      accessToken: authentication.account.accessToken
-    })
+    expect(setCurrentAccountMock).toHaveBeenCalledWith(authentication.account)
+    expect(setCurrentAccountMock).toHaveReturnedTimes(1)
     expect(history.length).toBe(1)
     expect(history.location.pathname).toBe('/')
-  })
-
-  test('should go to signup page', () => {
-    const { getByTestId } = sut
-
-    const signUpPage = getByTestId('signup-page')
-    fireEvent.click(signUpPage)
-
-    expect(history.length).toBe(2)
-    expect(history.location.pathname).toBe('/signup')
   })
 })

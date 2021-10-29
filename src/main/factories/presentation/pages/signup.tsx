@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { makeRemoteAddAccount } from '@/main/factories/data'
-import { makeLocalstorageAdapter, makesignUpValidations } from '@/main/factories/infra'
+import { makesignUpValidations } from '@/main/factories/infra'
 import { SignUp } from '@/presentation/pages'
 
 export const makeSignUpPage: React.FC = () => {
@@ -10,7 +10,6 @@ export const makeSignUpPage: React.FC = () => {
     <SignUp
       validation={makesignUpValidations()}
       addAccount={makeRemoteAddAccount(`${process.env.API_URL}${path}`)}
-      cache={makeLocalstorageAdapter()}
     />
   )
 }

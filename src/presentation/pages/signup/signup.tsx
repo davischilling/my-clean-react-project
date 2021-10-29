@@ -1,10 +1,9 @@
 import { Validation } from '@/data/contracts'
 import { AddAccount } from '@/domain/usecases'
-import { LocalStorageAdapter } from '@/infra/cache'
 import { Footer, FormStatus, Input, LoginHeader, SubmitButton } from '@/presentation/components'
-import { FormContext } from '@/presentation/contexts'
+import { ApiContext, FormContext } from '@/presentation/contexts'
 import { useValidation } from '@/presentation/hooks'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import Styles from './signup-styles.scss'
 import { SignUpType } from './signup-type'
@@ -12,10 +11,10 @@ import { SignUpType } from './signup-type'
 type Props = {
   validation: Validation
   addAccount: AddAccount
-  cache: LocalStorageAdapter
 }
 
-const SignUp: React.FC<Props> = ({ validation, addAccount, cache }: Props) => {
+const SignUp: React.FC<Props> = ({ validation, addAccount }: Props) => {
+  const { setCurrentAccount } = useContext(ApiContext)
   const history = useHistory()
   const defaultErrorMessage = 'Campo obrigatório'
   const [state, setState] = useState<SignUpType>({
@@ -46,9 +45,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, cache }: Props) => {
         password: state.password,
         passwordConfirmation: state.passwordConfirmation
       })
-      cache.set('accessToken', {
-        accessToken: account.accessToken
-      })
+      setCurrentAccount(account)
       history.replace('/')
     } catch (err) {
       setState({

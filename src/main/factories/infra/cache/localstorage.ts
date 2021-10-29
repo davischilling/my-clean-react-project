@@ -1,5 +1,5 @@
 import { LocalStorageAdapter } from '@/infra/cache'
 
-export const makeLocalstorageAdapter = (): LocalStorageAdapter => {
+export const makeLocalStorageAdapter = (): LocalStorageAdapter => {
   return new LocalStorageAdapter()
 }

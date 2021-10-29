@@ -1,22 +1,21 @@
 import { Validation } from '@/data/contracts'
 import { Footer, FormStatus, Input, LoginHeader, SubmitButton } from '@/presentation/components'
-import { FormContext } from '@/presentation/contexts'
+import { FormContext, ApiContext } from '@/presentation/contexts'
 import Styles from './login-styles.scss'
 
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Authentication } from '@/domain/usecases'
 import { Link, useHistory } from 'react-router-dom'
-import { LocalStorageAdapter } from '@/infra/cache'
 import { useValidation } from '@/presentation/hooks'
 import { LoginType } from './login-type'
 
 type Props = {
   validation: Validation
   authentication: Authentication
-  cache: LocalStorageAdapter
 }
 
-const Login: React.FC<Props> = ({ validation, authentication, cache }: Props) => {
+const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
+  const { setCurrentAccount } = useContext(ApiContext)
   const history = useHistory()
   const defaultErrorMessage = 'Campo obrigatório'
 
@@ -42,9 +41,7 @@ const Login: React.FC<Props> = ({ validation, authentication, cache }: Props) =>
         email: state.email,
         password: state.password
       })
-      cache.set('accessToken', {
-        accessToken: account.accessToken
-      })
+      setCurrentAccount(account)
       history.replace('/')
     } catch (err) {
       setState({
