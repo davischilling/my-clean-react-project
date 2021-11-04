@@ -1,10 +1,12 @@
 import { Validation } from '@/data/contracts'
 import { AddAccount } from '@/domain/usecases'
-import { Footer, FormStatus, Input, LoginHeader, SubmitButton } from '@/presentation/components'
-import { ApiContext, FormContext } from '@/presentation/contexts'
+import { Footer, LoginHeader, currentAccountState } from '@/presentation/components'
 import { useValidation } from '@/presentation/hooks'
-import React, { useContext, useEffect, useState } from 'react'
+import { signUpState, Input, FormStatus, SubmitButton } from './components'
+
+import React, { useEffect } from 'react'
 import { Link, useHistory } from 'react-router-dom'
+import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil'
 import Styles from './signup-styles.scss'
 import { SignUpType } from './signup-type'
 
@@ -14,23 +16,11 @@ type Props = {
 }
 
 const SignUp: React.FC<Props> = ({ validation, addAccount }: Props) => {
-  const { setCurrentAccount } = useContext(ApiContext)
+  const resetSignUpState = useResetRecoilState(signUpState)
+  const { setCurrentAccount } = useRecoilValue(currentAccountState)
   const history = useHistory()
   const defaultErrorMessage = 'Campo obrigatório'
-  const [state, setState] = useState<SignUpType>({
-    isLoading: false,
-    name: '',
-    email: '',
-    password: '',
-    passwordConfirmation: '',
-    nameError: defaultErrorMessage,
-    emailError: defaultErrorMessage,
-    passwordError: defaultErrorMessage,
-    passwordConfirmationError: defaultErrorMessage,
-    mainErrorMessage: '',
-    fieldToValidate: '',
-    isFormValid: false
-  })
+  const [state, setState] = useRecoilState<SignUpType>(signUpState)
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault()
@@ -46,13 +36,14 @@ const SignUp: React.FC<Props> = ({ validation, addAccount }: Props) => {
         passwordConfirmation: state.passwordConfirmation
       })
       setCurrentAccount(account)
+      resetSignUpState()
       history.replace('/')
     } catch (err) {
-      setState({
-        ...state,
+      setState(old => ({
+        ...old,
         isLoading: false,
         mainErrorMessage: err.message
-      })
+      }))
     }
   }
 
@@ -81,23 +72,21 @@ const SignUp: React.FC<Props> = ({ validation, addAccount }: Props) => {
   return (
     <div className={Styles.signupWrap}>
       <LoginHeader />
-      <FormContext.Provider value={{ state, setState, validation }}>
-        <form
-          data-testid="form"
-          onSubmit={handleSubmit}
-          className={Styles.form}
-          autoComplete="off"
-        >
-          <h2>Criar Conta</h2>
-          <Input type="text" name="name" placeholder="Digite seu nome" />
-          <Input type="email" name="email" placeholder="Digite seu e-mail" />
-          <Input type="password" name="password" placeholder="Digite sua senha" />
-          <Input type="password" name="passwordConfirmation" placeholder="Confirme sua senha" />
-          <SubmitButton text="Cadastrar" />
-          <Link data-testid="signup-page" to="/login" className={Styles.link}>Login</Link>
-          <FormStatus />
-        </form>
-      </FormContext.Provider>
+      <form
+        data-testid="form"
+        onSubmit={handleSubmit}
+        className={Styles.form}
+        autoComplete="off"
+      >
+        <h2>Criar Conta</h2>
+        <Input type="text" name="name" placeholder="Digite seu nome" />
+        <Input type="email" name="email" placeholder="Digite seu e-mail" />
+        <Input type="password" name="password" placeholder="Digite sua senha" />
+        <Input type="password" name="passwordConfirmation" placeholder="Confirme sua senha" />
+        <SubmitButton text="Cadastrar" />
+        <Link data-testid="signup-page" to="/login" className={Styles.link}>Login</Link>
+        <FormStatus />
+      </form>
       <Footer />
     </div>
   )

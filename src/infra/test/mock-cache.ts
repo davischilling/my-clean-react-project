@@ -2,7 +2,7 @@ import { GetStorage, SetStorage } from '@/data/contracts'
 
 import faker from 'faker'
 
-export class LocalStorageAdapterStub implements SetStorage, GetStorage {
+export class GetStorageSpy implements SetStorage, GetStorage {
   key: string
   value: any = faker.random.objectElement()
 

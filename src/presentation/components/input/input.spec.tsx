@@ -1,26 +1,23 @@
-import { Input } from '@/presentation/components'
+import { InputBase } from '@/presentation/components'
 import React from 'react'
-import { render, RenderResult, fireEvent } from '@testing-library/react'
-import { FormContext } from '@/presentation/contexts'
+import { render, fireEvent, screen } from '@testing-library/react'
 
-const makeSut = (): RenderResult => {
-  return render(
-    <FormContext.Provider value={{ state: { field: '' }, setState: () => {} }} >
-      <Input name="field" />
-    </FormContext.Provider>
+const makeSut = (): void => {
+  render(
+    <InputBase name="field" state={{}} setState={null} />
   )
 }
 
 describe('Input Component', () => {
   test('should begin with readOnly', () => {
-    const { getByTestId } = makeSut()
-    const input = getByTestId('field') as HTMLInputElement
+    makeSut()
+    const input: HTMLInputElement = screen.getByTestId('field')
     expect(input.readOnly).toBe(true)
   })
 
   test('should remove readOnly on focus', () => {
-    const { getByTestId } = makeSut()
-    const input = getByTestId('field') as HTMLInputElement
+    makeSut()
+    const input: HTMLInputElement = screen.getByTestId('field')
     fireEvent.focus(input)
     expect(input.readOnly).toBe(false)
   })

@@ -10,7 +10,10 @@ export const mockAuthenticationParams = (): Authentication.Params => ({
 })
 
 export class AuthenticationStub implements Authentication {
+  params: Authentication.Params
+  callsCount = 0
   account = mockAccountModel()
+
   async auth (params: Authentication.Params): Promise<AccountModel> {
     return await Promise.resolve({ ...this.account })
   }

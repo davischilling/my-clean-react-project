@@ -1,80 +1,72 @@
-import Login from './login'
-import { InvalidCredentialsError } from '@/data/error'
+import { InvalidCredentialsError } from '@/data/errors'
 import { ValidationStub } from '@/data/test'
 import { AuthenticationStub } from '@/domain/test'
-import { ApiContext } from '@/presentation/contexts'
-import 'jest-localstorage-mock'
-import { waitFor, cleanup, fireEvent, render, RenderResult } from '@testing-library/react'
+import { renderWithHistory } from '@/presentation/test/mocks'
+import Login from './login'
+
+import { cleanup, fireEvent, screen, waitFor, act } from '@testing-library/react'
 import faker from 'faker'
-import React from 'react'
-import { Router } from 'react-router-dom'
 import { createMemoryHistory } from 'history'
+import 'jest-localstorage-mock'
 
-const populateEmailField = (sut: RenderResult, email: string = faker.internet.email()): void => {
-  const { getByTestId } = sut
-  const emailInput = getByTestId('email')
-  fireEvent.input(emailInput, { target: { value: email } })
+const populateEmailField = (email: string = faker.internet.email()): void => {
+  const emailInput = screen.getByTestId('email')
+  act(() => {
+    fireEvent.input(emailInput, { target: { value: email } })
+  })
 }
 
-const populatePasswordField = (sut: RenderResult, password: string = faker.internet.password()): void => {
-  const { getByTestId } = sut
-  const passwordInput = getByTestId('password')
-  fireEvent.input(passwordInput, { target: { value: password } })
+const populatePasswordField = (password: string = faker.internet.password()): void => {
+  const passwordInput = screen.getByTestId('password')
+  act(() => {
+    fireEvent.input(passwordInput, { target: { value: password } })
+  })
 }
 
-const simulateValidSubmit = (sut: RenderResult, email?: string, password?: string): void => {
-  const { getByTestId } = sut
-  populateEmailField(sut, email)
-  populatePasswordField(sut, password)
-  const submitButton = getByTestId('submit')
-  fireEvent.click(submitButton)
+const simulateValidSubmit = (email?: string, password?: string): void => {
+  populateEmailField(email)
+  populatePasswordField(password)
+  const submitButton = screen.getByTestId('submit')
+  act(() => {
+    fireEvent.click(submitButton)
+  })
 }
 
 const history = createMemoryHistory({ initialEntries: ['/login'] })
 
 describe('Login Component', () => {
-  let sut: RenderResult
   let validateSpy: jest.SpyInstance
   let authenticationSpy: jest.SpyInstance
   let authentication: AuthenticationStub
-  let setCurrentAccountMock: typeof jest.fn
+  let setCurrentAccountMock: any
 
   beforeEach(() => {
     const validation = new ValidationStub()
     validateSpy = jest.spyOn(validation, 'validate')
     authentication = new AuthenticationStub()
     authenticationSpy = jest.spyOn(authentication, 'auth')
-    setCurrentAccountMock = jest.fn()
-
-    sut = render(
-      <ApiContext.Provider value={{
-        setCurrentAccount: setCurrentAccountMock
-      }}>
-        <Router history={history} >
-          <Login
-            validation={validation}
-            authentication={authentication}
-          />
-        </Router>
-      </ApiContext.Provider>
-    )
+    act(() => {
+      const { setCurrentAccountMock: currentAccountMock } = renderWithHistory({
+        history,
+        Page: () => Login({ validation, authentication })
+      })
+      setCurrentAccountMock = currentAccountMock
+    })
   })
 
   afterEach(cleanup)
 
   test('should start with initial state', () => {
-    const { getByTestId } = sut
+    const emailWrap = screen.getByTestId('email-wrap')
+    const email = screen.getByTestId('email')
+    const emailLabel = screen.getByTestId('email-label')
 
-    const emailWrap = getByTestId('email-wrap')
-    const email = getByTestId('email')
-    const emailLabel = getByTestId('email-label')
+    const passwordWrap = screen.getByTestId('password-wrap')
+    const password = screen.getByTestId('password')
+    const passwordLabel = screen.getByTestId('password-label')
 
-    const passwordWrap = getByTestId('password-wrap')
-    const password = getByTestId('password')
-    const passwordLabel = getByTestId('password-label')
-
-    const submitButton = getByTestId('submit') as HTMLButtonElement
-    const errorWrap = getByTestId('error-wrap')
+    const submitButton: HTMLButtonElement = screen.getByTestId('submit')
+    const errorWrap = screen.getByTestId('error-wrap')
 
     expect(emailWrap.getAttribute('data-status')).toBe('invalid')
     expect(email.title).toBe('Campo obrigatório')
@@ -90,14 +82,14 @@ describe('Login Component', () => {
 
   test('should call Validation with correct email', () => {
     const email = faker.internet.email()
-    populateEmailField(sut, email)
+    populateEmailField(email)
 
     expect(validateSpy).toHaveBeenCalledWith('email', { email })
   })
 
   test('should call Validation with correct password', () => {
     const password = faker.internet.password()
-    populatePasswordField(sut, password)
+    populatePasswordField(password)
 
     expect(validateSpy).toHaveBeenCalledWith('password', { password })
   })
@@ -108,11 +100,9 @@ describe('Login Component', () => {
       error: 'Email inválido'
     }
     validateSpy.mockReturnValueOnce(validateResponse)
-
-    const { getByTestId } = sut
-    populateEmailField(sut)
-    const email = getByTestId('email')
-    const emailLabel = getByTestId('email-label')
+    populateEmailField()
+    const email = screen.getByTestId('email')
+    const emailLabel = screen.getByTestId('email-label')
 
     expect(email.title).toBe(validateResponse.error)
     expect(emailLabel.title).toBe(validateResponse.error)
@@ -124,26 +114,22 @@ describe('Login Component', () => {
       error: 'Password inválido'
     }
     validateSpy.mockReturnValueOnce(validateResponse)
-
-    const { getByTestId } = sut
-    populatePasswordField(sut)
-    const password = getByTestId('password')
-    const passwordLabel = getByTestId('password-label')
+    populatePasswordField()
+    const password = screen.getByTestId('password')
+    const passwordLabel = screen.getByTestId('password-label')
 
     expect(password.title).toBe(validateResponse.error)
     expect(passwordLabel.title).toBe(validateResponse.error)
   })
 
   test('should show valid state if Validation succeeds', () => {
-    const { getByTestId } = sut
+    populateEmailField()
+    const email = screen.getByTestId('email')
+    const emailLabel = screen.getByTestId('email-label')
 
-    populateEmailField(sut)
-    const email = getByTestId('email')
-    const emailLabel = getByTestId('email-label')
-
-    populatePasswordField(sut)
-    const password = getByTestId('password')
-    const passwordLabel = getByTestId('password-label')
+    populatePasswordField()
+    const password = screen.getByTestId('password')
+    const passwordLabel = screen.getByTestId('password-label')
 
     expect(email.title).toBeFalsy()
     expect(emailLabel.title).toBeFalsy()
@@ -152,30 +138,29 @@ describe('Login Component', () => {
   })
 
   test('should disable submit button only if form is invalid', () => {
-    const { getByTestId } = sut
-
-    populateEmailField(sut)
-    populatePasswordField(sut)
-    const submitButton = getByTestId('submit') as HTMLButtonElement
+    populateEmailField()
+    populatePasswordField()
+    const submitButton: HTMLButtonElement = screen.getByTestId('submit')
 
     expect(submitButton.disabled).toBe(false)
   })
 
-  test('should show spinner on submit', () => {
-    const { getByTestId } = sut
+  test('should show spinner on submit', async () => {
+    simulateValidSubmit()
 
-    simulateValidSubmit(sut)
-
-    const spinner = getByTestId('spinner')
+    const spinner = screen.getByTestId('spinner')
+    await waitFor(() => spinner)
 
     expect(spinner).toBeTruthy()
   })
 
-  test('should call Authentication with correct values on submit', () => {
+  test('should call Authentication with correct values on submit', async () => {
     const email = faker.internet.email()
     const password = faker.internet.password()
 
-    simulateValidSubmit(sut, email, password)
+    simulateValidSubmit(email, password)
+    const spinner = screen.getByTestId('spinner')
+    await waitFor(() => spinner)
 
     expect(authenticationSpy).toHaveBeenCalledWith({
       email,
@@ -183,50 +168,50 @@ describe('Login Component', () => {
     })
   })
 
-  test('should call Authentication only once', () => {
-    simulateValidSubmit(sut)
-    simulateValidSubmit(sut)
+  test('should call Authentication only once', async () => {
+    simulateValidSubmit()
+    simulateValidSubmit()
+
+    const spinner = screen.getByTestId('spinner')
+    await waitFor(() => spinner)
 
     expect(authenticationSpy).toHaveBeenCalledTimes(1)
   })
 
   test('should not call Authentication if form is invalid', () => {
-    const { getByTestId } = sut
-
     const validateResponse = {
       value: 'password',
       error: faker.random.words()
     }
     validateSpy.mockReturnValueOnce(validateResponse)
 
-    populateEmailField(sut)
-    fireEvent.submit(getByTestId('form'))
+    populateEmailField()
+    act(() => {
+      fireEvent.submit(screen.getByTestId('form'))
+    })
 
     expect(authenticationSpy).toHaveBeenCalledTimes(0)
   })
 
   test('should present error if Authentication fails', async () => {
-    const { getByTestId } = sut
     const error = new InvalidCredentialsError()
 
     authenticationSpy.mockResolvedValueOnce(Promise.reject(error))
 
-    simulateValidSubmit(sut)
-    const errorWrap = getByTestId('error-wrap')
+    simulateValidSubmit()
+    const errorWrap = screen.getByTestId('error-wrap')
     await waitFor(() => errorWrap)
 
-    const mainErrorMessage = getByTestId('main-error')
+    const mainErrorMessage = screen.getByTestId('main-error')
 
     expect(mainErrorMessage.textContent).toBe(error.message)
     expect(errorWrap.childElementCount).toBe(1)
   })
 
   test('should call setCurrentAccount on success and navigates to main page', async () => {
-    const { getByTestId } = sut
+    simulateValidSubmit()
 
-    simulateValidSubmit(sut)
-
-    await waitFor(() => getByTestId('form'))
+    await waitFor(() => screen.getByTestId('form'))
 
     expect(setCurrentAccountMock).toHaveBeenCalledWith(authentication.account)
     expect(setCurrentAccountMock).toHaveReturnedTimes(1)

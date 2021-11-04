@@ -1,26 +1,29 @@
-import React, { useEffect, useState } from 'react'
-
-import { Footer, Header } from '@/presentation/components'
+import { Footer, Header, Error } from '@/presentation/components'
 import Styles from './survey-list-styles.scss'
-import { SurveyContext, SurveyError, SurveyListItems } from './components'
+import { SurveyListItems, surveyListState } from './components'
 import { LoadSurveyList } from '@/domain/usecases'
-import { SurveyModel } from '@/domain/models'
+import { useErrorHandler } from '@/presentation/hooks'
+
+import React, { useEffect } from 'react'
+import { useRecoilState, useResetRecoilState } from 'recoil'
 
 type Props = {
   loadSurveyList: LoadSurveyList
 }
 
 const SurveyList: React.FC<Props> = ({ loadSurveyList }: Props) => {
-  const [state, setState] = useState({
-    surveys: [] as SurveyModel[],
-    error: '',
-    reload: false
+  const resetSurveyListState = useResetRecoilState(surveyListState)
+  const [state, setState] = useRecoilState(surveyListState)
+  const handleError = useErrorHandler((error: Error) => {
+    setState({ ...state, error: error.message })
   })
+  const reload = (): void => setState(old => ({ surveys: [], error: '', reload: !old.reload }))
 
+  useEffect(() => resetSurveyListState(), [])
   useEffect(() => {
     loadSurveyList.loadAll()
       .then(surveys => setState({ ...state, surveys }))
-      .catch(error => setState({ ...state, error: error.message }))
+      .catch(handleError)
   }, [state.reload])
 
   return (
@@ -28,9 +31,10 @@ const SurveyList: React.FC<Props> = ({ loadSurveyList }: Props) => {
       <Header />
       <div className={Styles.contentWrap}>
         <h2>Enquetes</h2>
-        <SurveyContext.Provider value={{ state, setState }}>
-          { state.error ? <SurveyError /> : <SurveyListItems /> }
-        </SurveyContext.Provider>
+        { state.error
+          ? <Error error={state.error} reload={reload} />
+          : <SurveyListItems surveys={state.surveys} />
+        }
       </div>
       <Footer />
     </div>

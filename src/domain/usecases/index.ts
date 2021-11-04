@@ -1,3 +1,3 @@
 export * from './authentication'
-export * from './load-servey'
+export * from './load-survey'
 export * from './add-account'

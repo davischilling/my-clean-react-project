@@ -1,21 +1,13 @@
-import { HttpPostClient, HttpGetClient } from '@/data/contracts/http'
-
+import axios from 'axios'
 import faker from 'faker'
 
-export const mockGetRequest = (): HttpGetClient.Request => ({
-  url: faker.internet.url(),
-  headers: faker.random.objectElement()
+export const mockHttpResponse = (): any => ({
+  data: faker.random.objectElement(),
+  status: faker.datatype.number()
 })
 
-export const mockPostRequest = (): HttpPostClient.Request => ({
-  url: faker.internet.url(),
-  body: faker.random.objectElement()
-})
-
-export const mockAxiosResponse = (): {
-  status: number
-  data: any
-} => ({
-  status: faker.datatype.number(),
-  data: faker.random.objectElement()
-})
+export const mockAxios = (): jest.Mocked<typeof axios> => {
+  const mockedAxios = axios as jest.Mocked<typeof axios>
+  mockedAxios.request.mockClear().mockResolvedValue(mockHttpResponse())
+  return mockedAxios
+}

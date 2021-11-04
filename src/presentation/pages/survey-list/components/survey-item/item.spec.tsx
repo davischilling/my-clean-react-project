@@ -2,18 +2,18 @@ import React from 'react'
 import { render, screen, cleanup } from '@testing-library/react'
 
 import { SurveyItem } from '@/presentation/pages/survey-list/components'
-import { SurveyModel } from '@/domain/models'
-import { mockSurveyModel } from '@/domain/test'
 import { IconName } from '@/presentation/components'
+import { LoadSurveyList } from '@/domain/usecases'
+import { mockSurveyModel } from '@/data/test'
 
-const makeSut = (survey: SurveyModel): void => {
+const makeSut = (survey: LoadSurveyList.Model): void => {
   render(
     <SurveyItem survey={survey} />
   )
 }
 
 describe('SurveyItem Component', () => {
-  let survey: SurveyModel
+  let survey: LoadSurveyList.Model
 
   beforeEach(() => {
     survey = mockSurveyModel()

@@ -4,12 +4,8 @@ import { makeLoginValidations } from '@/main/factories/infra'
 
 import React from 'react'
 
-export const makeLoginPage: React.FC = () => {
-  const path = '/login'
-  return (
-    <Login
-      validation={makeLoginValidations()}
-      authentication={makeRemoteAuthentication(`${process.env.API_URL}${path}`)}
-    />
-  )
-}
+export const makeLoginPage: React.FC = () =>
+  <Login
+    validation={makeLoginValidations()}
+    authentication={makeRemoteAuthentication()}
+  />

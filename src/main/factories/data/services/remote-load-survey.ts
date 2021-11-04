@@ -1,6 +1,6 @@
-import { RemoteLoadSurvey } from '@/data/services'
-import { makeHttpClient } from '@/main/factories/infra/http/axios'
+import { RemoteLoadSurveyList } from '@/data/services'
+import { makeApiUrl } from '@/main/factories/infra/http'
+import { makeAuthorizeHttpClientDecorator } from '@/main/factories/main/decorators'
 
-export const makeRemoteLoadSurvey = (url: string): RemoteLoadSurvey => {
-  return new RemoteLoadSurvey(url, makeHttpClient())
-}
+export const makeRemoteLoadSurvey = (): RemoteLoadSurveyList =>
+  new RemoteLoadSurveyList(makeApiUrl('/surveys'), makeAuthorizeHttpClientDecorator())

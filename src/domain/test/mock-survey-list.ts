@@ -1,22 +1,16 @@
-import { SurveyModel } from '@/domain/models'
+import { RemoteLoadSurveyList } from '@/data/services'
 
 import faker from 'faker'
 
-export const mockSurveyModel = (): SurveyModel => ({
+export const mockRemoteSurveyModel = (): RemoteLoadSurveyList.Model => ({
   id: faker.datatype.uuid(),
   question: faker.random.words(10),
-  answers: [{
-    answer: faker.random.words(4),
-    image: faker.internet.url()
-  }, {
-    answer: faker.random.words(5)
-  }],
   didAnswer: faker.datatype.boolean(),
-  date: faker.date.recent()
+  date: faker.date.recent().toISOString()
 })
 
-export const mockSurveyListModel = (): SurveyModel[] => ([
-  mockSurveyModel(),
-  mockSurveyModel(),
-  mockSurveyModel()
+export const mockRemoteSurveyListModel = (): RemoteLoadSurveyList.Model[] => ([
+  mockRemoteSurveyModel(),
+  mockRemoteSurveyModel(),
+  mockRemoteSurveyModel()
 ])
