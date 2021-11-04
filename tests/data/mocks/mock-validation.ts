@@ -1,5 +1,5 @@
 import { Validation, ValidationResponse } from '@/data/contracts'
-import { mockValidationResponse } from '@/infra/test'
+import { mockValidationResponse } from '@/tests/infra/mocks'
 
 export class ValidationStub implements Validation {
   errorMessage: string

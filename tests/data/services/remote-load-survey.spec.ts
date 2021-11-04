@@ -1,8 +1,8 @@
 import { RemoteLoadSurveyList } from '@/data/services'
 import { HttpStatusCode } from '@/data/contracts/http'
 import { UnexpectedError, AccessDeniedError } from '@/data/errors'
-import { HttpClientSpy } from '@/data/test'
-import { mockRemoteSurveyListModel } from '@/domain/test'
+import { HttpClientSpy } from '@/tests/data/mocks'
+import { mockRemoteSurveyListModel } from '@/tests/domain/mocks'
 
 import faker from 'faker'
 

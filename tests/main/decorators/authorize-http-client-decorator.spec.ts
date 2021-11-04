@@ -1,8 +1,8 @@
 import { AuthorizeHttpClientDecorator } from '@/main/decorators'
 import { HttpRequest } from '@/data/contracts/http'
-import { mockAccountModel } from '@/domain/test'
-import { GetStorageSpy } from '@/infra/test'
-import { HttpClientSpy, mockHttpRequest } from '@/data/test'
+import { mockAccountModel } from '@/tests/domain/mocks'
+import { GetStorageSpy } from '@/tests/infra/mocks'
+import { HttpClientSpy, mockHttpRequest } from '@/tests/data/mocks'
 
 import faker from 'faker'
 

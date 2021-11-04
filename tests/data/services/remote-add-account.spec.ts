@@ -1,28 +1,28 @@
 import { HttpStatusCode } from '@/data/contracts'
-import { InvalidCredentialsError, UnexpectedError } from '@/data/errors'
+import { EmailInUseError, UnexpectedError } from '@/data/errors'
+import { HttpClientSpy } from '@/tests/data/mocks'
 import { AccountModel } from '@/domain/models'
-import { mockAccountModel } from '@/domain/test/mock-account'
-import { mockAuthenticationParams } from '@/domain/test'
-import { RemoteAuthentication } from './remote-authentication'
+import { mockAddAccountParams } from '@/tests/domain/mocks'
+import { mockAccountModel } from '@/tests/domain/mocks/mock-account'
+import { RemoteAddAccount } from '@/data/services'
 
 import faker from 'faker'
-import { HttpClientSpy } from '@/data/test'
 
 type SutTypes = {
-  sut: RemoteAuthentication
+  sut: RemoteAddAccount
   httpClientSpy: HttpClientSpy<AccountModel>
 }
 
 const makeSut = (url: string): SutTypes => {
-  const httpClientSpy = new HttpClientSpy<RemoteAuthentication.Model>()
-  const sut = new RemoteAuthentication(url, httpClientSpy)
+  const httpClientSpy = new HttpClientSpy<RemoteAddAccount.Model>()
+  const sut = new RemoteAddAccount(url, httpClientSpy)
   return {
     sut,
     httpClientSpy
   }
 }
 
-describe('RemoteAuthentication', () => {
+describe('RemoteAddAccount', () => {
   let url: string
 
   beforeEach(() => {
@@ -32,29 +32,29 @@ describe('RemoteAuthentication', () => {
   test('should call HttpClient with correct URL', async () => {
     const { sut, httpClientSpy } = makeSut(url)
 
-    await sut.auth(mockAuthenticationParams())
+    await sut.add(mockAddAccountParams())
 
     expect(httpClientSpy.url).toBe(url)
   })
 
   test('should call HttpClient with correct body', async () => {
     const { sut, httpClientSpy } = makeSut(url)
-    const authParams = mockAuthenticationParams()
+    const addAccountParams = mockAddAccountParams()
 
-    await sut.auth(authParams)
+    await sut.add(addAccountParams)
 
-    expect(httpClientSpy.body).toEqual(authParams)
+    expect(httpClientSpy.body).toEqual(addAccountParams)
   })
 
-  test('should throw InvalidCredentialsError if HttpClient returns 401', async () => {
+  test('should throw EmailInUseError if HttpClient returns 403', async () => {
     const { sut, httpClientSpy } = makeSut(url)
     httpClientSpy.response = {
-      statusCode: HttpStatusCode.unauthorized
+      statusCode: HttpStatusCode.forbidden
     }
 
-    const promise = sut.auth(mockAuthenticationParams())
+    const promise = sut.add(mockAddAccountParams())
 
-    await expect(promise).rejects.toThrow(new InvalidCredentialsError())
+    await expect(promise).rejects.toThrow(new EmailInUseError())
   })
 
   test('should throw UnexpectedError if HttpClient returns 400', async () => {
@@ -63,7 +63,7 @@ describe('RemoteAuthentication', () => {
       statusCode: HttpStatusCode.badRequest
     }
 
-    const promise = sut.auth(mockAuthenticationParams())
+    const promise = sut.add(mockAddAccountParams())
 
     await expect(promise).rejects.toThrow(new UnexpectedError())
   })
@@ -74,7 +74,7 @@ describe('RemoteAuthentication', () => {
       statusCode: HttpStatusCode.notFound
     }
 
-    const promise = sut.auth(mockAuthenticationParams())
+    const promise = sut.add(mockAddAccountParams())
 
     await expect(promise).rejects.toThrow(new UnexpectedError())
   })
@@ -85,7 +85,7 @@ describe('RemoteAuthentication', () => {
       statusCode: HttpStatusCode.serverError
     }
 
-    const promise = sut.auth(mockAuthenticationParams())
+    const promise = sut.add(mockAddAccountParams())
 
     await expect(promise).rejects.toThrow(new UnexpectedError())
   })
@@ -98,7 +98,7 @@ describe('RemoteAuthentication', () => {
       body: httpResult
     }
 
-    const account = await sut.auth(mockAuthenticationParams())
+    const account = await sut.add(mockAddAccountParams())
 
     expect(account).toEqual(httpResult)
   })

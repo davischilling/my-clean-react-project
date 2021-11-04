@@ -1,6 +1,6 @@
-import { mockAccountModel } from '@/domain/test'
+import { mockAccountModel } from '@/tests/domain/mocks'
 import { PrivateRoute } from '@/main/proxies'
-import { renderWithHistory } from '@/presentation/test/mocks'
+import { renderWithHistory } from '@/tests/presentation/mocks'
 
 import { createMemoryHistory, MemoryHistory } from 'history'
 

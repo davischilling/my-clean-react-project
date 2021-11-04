@@ -1,8 +1,8 @@
 import { AccessDeniedError, UnexpectedError } from '@/data/errors'
-import { LoadSurveyListStub } from '@/data/test'
+import { LoadSurveyListStub } from '@/tests/data/mocks'
 import { AccountModel } from '@/domain/models'
 import { SurveyList } from '@/presentation/pages'
-import { renderWithHistory } from '@/presentation/test/mocks'
+import { renderWithHistory } from '@/tests/presentation/mocks'
 
 import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react'
 import { createMemoryHistory, MemoryHistory } from 'history'

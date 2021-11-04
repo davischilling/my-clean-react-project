@@ -1,8 +1,8 @@
 import { InvalidCredentialsError } from '@/data/errors'
-import { ValidationStub } from '@/data/test'
-import { AuthenticationStub } from '@/domain/test'
-import { renderWithHistory } from '@/presentation/test/mocks'
-import Login from './login'
+import { ValidationStub } from '@/tests/data/mocks'
+import { AuthenticationStub } from '@/tests/domain/mocks'
+import { renderWithHistory } from '@/tests/presentation/mocks'
+import { Login } from '@/presentation/pages'
 
 import { cleanup, fireEvent, screen, waitFor, act } from '@testing-library/react'
 import faker from 'faker'

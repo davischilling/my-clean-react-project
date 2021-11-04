@@ -1,4 +1,4 @@
-import { AddAccount } from '../usecases'
+import { AddAccount } from '@/domain/usecases'
 
 import faker from 'faker'
 

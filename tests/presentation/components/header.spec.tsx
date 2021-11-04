@@ -1,7 +1,7 @@
 import { Header } from '@/presentation/components'
 import { AccountModel } from '@/domain/models'
-import { mockAccountModel } from '@/domain/test'
-import { renderWithHistory } from '@/presentation/test/mocks'
+import { mockAccountModel } from '@/tests/domain/mocks'
+import { renderWithHistory } from '@/tests/presentation/mocks'
 
 import { fireEvent, screen } from '@testing-library/react'
 import { createMemoryHistory, MemoryHistory } from 'history'

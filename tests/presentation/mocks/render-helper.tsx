@@ -6,7 +6,7 @@ import { MemoryHistory } from 'history'
 import { render } from '@testing-library/react'
 import { MutableSnapshot, RecoilRoot, RecoilState } from 'recoil'
 import React from 'react'
-import { mockAccountModel } from '@/domain/test'
+import { mockAccountModel } from '@/tests/domain/mocks'
 
 type Params = {
   Page: React.FC

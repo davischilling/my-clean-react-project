@@ -1,7 +1,4 @@
 {
-  "env": {
-    "cypress/globals": true
-  },
   "settings": {
     "react": {
       "version": "detect"
@@ -12,6 +9,9 @@
     "plugin:react/recommended",
     "plugin:cypress/recommended"
   ],
+  "env": {
+    "cypress/globals": true
+  },
   "plugins": ["react", "cypress"],
   "parserOptions": {
     "project": "./tsconfig-eslint.json"
