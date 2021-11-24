@@ -16,12 +16,12 @@ module.exports = merge(common, {
       test: /\.scss$/,
       use: [{
         loader: MiniCssExtractPlugin.loader
-      },{
+      }, {
         loader: 'css-loader',
         options: {
           modules: true
         }
-      },{
+      }, {
         loader: 'sass-loader'
       }]
     }]
@@ -29,6 +29,7 @@ module.exports = merge(common, {
   externals: {
     react: 'React',
     axios: 'axios',
+    recoil: 'Recoil',
     'react-dom': 'ReactDOM',
     'react-router-dom': 'ReactRouterDOM'
   },

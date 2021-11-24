@@ -2,9 +2,9 @@ import { SchemaField } from '@/infra/validation/joi'
 
 import Joi from 'joi'
 
-const passwordPattern = /^[a-zA-Z0-9]{3,30}$/
+const passwordPattern = /^[a-zA-Z0-9]{5,30}$/
 
-export const signInValidations: SchemaField[] = [
+export const loginValidations: SchemaField[] = [
   {
     field: 'email',
     schema: Joi.object({

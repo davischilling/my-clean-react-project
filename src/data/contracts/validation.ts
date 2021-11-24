@@ -9,5 +9,5 @@ export type ValidationResponse = {
 }
 
 export interface Validation {
-  validate: (input: object) => ValidationResponse
+  validate: (field: string, objToValidate: object) => ValidationResponse
 }
