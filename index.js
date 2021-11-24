@@ -6,6 +6,6 @@ const app = express()
 const root = join(__dirname, 'dist')
 app.use(express.static(root))
 app.use(fallback('index.html', { root }))
-app.listen(process.env.PORT || 8080, () => {
-  console.log(`Listening on port ${process.env.PORT || 8080}`)
+app.listen(process.env.PORT || 8081, () => {
+  console.log(`Listening on port ${process.env.PORT || 8081}`)
 })

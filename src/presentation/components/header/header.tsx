@@ -1,5 +1,8 @@
 import { useLogout } from '@/presentation/hooks'
-import { Logo, currentAccountState } from '@/presentation/components'
+import {
+  // Logo,
+  currentAccountState
+} from '@/presentation/components'
 import Styles from './header-styles.scss'
 
 import React, { memo } from 'react'
@@ -16,7 +19,7 @@ const Header: React.FC = () => {
   return (
     <header className={Styles.headerWrap}>
       <div className={Styles.headerContent}>
-        <Logo />
+        {/* <Logo /> */}
         <div className={Styles.logoutWrap}>
           <span data-testid="username">{getCurrentAccount().name}</span>
           <a data-testid="logout" href="#" onClick={buttonClick}>Sair</a>

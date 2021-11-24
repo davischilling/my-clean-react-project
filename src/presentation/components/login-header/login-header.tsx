@@ -1,4 +1,4 @@
-import { Logo } from '@/presentation/components'
+// import { Logo } from '@/presentation/components'
 import Styles from './login-header-styles.scss'
 
 import React, { memo } from 'react'
@@ -6,8 +6,8 @@ import React, { memo } from 'react'
 const LoginHeader: React.FC = () => {
   return (
     <header className={Styles.headerWrap}>
-      <Logo />
-      <h1>4Dev - Enquetes </h1>
+      {/* <Logo /> */}
+      <h1 className={Styles.headerTittle}>Snapout - Dashboard</h1>
     </header>
   )
 }
